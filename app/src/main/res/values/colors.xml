@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#45b237</color>
+    <color name="colorPrimaryDark">#0C6700</color>
+    <color name="colorAccent">#0A5500</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="grey">#AFACAC</color>
+    <color name="red">#DF0000</color>
+
+    <color name="transparent">#00FFFFFF</color>
+    <color name="divider">#3CD3D3D3</color>
+
+    <color name="snackbar_color">#CF1348</color>
+    <color name="wishlist_color">#E91E63</color>
+    <color name="home_background">#9CFAFAFA</color>
+    <color name="date_picker_dialog_color">#45b237</color>
+    <color name="bottom_nav_background_color">#D8D6D6</color>
+    <color name="bottom_nav_selected_color">#45b237</color>
+    <color name="card_background">#E2EAEE</color>
+    <color name="bottom_nav_unselected_color">#C8C8C8</color>
+    <color name="button_color">#45b237</color>
+    <color name="hint_color">#8F8F8F</color>
+    <color name="et_stroke_color">#45b237</color>
+    <color name="light">#4AFFFFFF</color>
+
+    <color name="gradient_start">#45b237</color>
+    <color name="gradient_medium">#0C6700</color>
+    <color name="gradient_end">#66EA55</color>
+    <color name="forgot_password_color">#E91E63</color>
+
+
+    <color name="text_color">#667176</color>
+    <color name="divider_color">#667176</color>
+    <color name="disable_color">#D3D3D3</color>
+
+    <color name="login_back_gradient_start">#E0F4DE</color>
+    <color name="login_back_gradient_center">#E2F6DF</color>
+    <color name="login_back_gradient_end">#B5F8AC</color>
+
+    <color name="color_pink_light">#5BE3FF</color>
+    <color name="light_text_color">#808C93</color>
+
+
+</resources>

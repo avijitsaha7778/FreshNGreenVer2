@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.gios.freshngreen.fragments.home.HomeFragment"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_homeFragment_to_productListFragment"
+            app:destination="@id/productListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.gios.freshngreen.fragments.home.ProfileFragment"
+        tools:layout="@layout/fragment_profile"></fragment>
+    <fragment
+        android:id="@+id/wishlistFragment"
+        android:name="com.gios.freshngreen.fragments.home.WishlistFragment"
+        tools:layout="@layout/fragment_wishlist">
+        <action
+            android:id="@+id/action_wishlistFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.gios.freshngreen.fragments.home.CategoriesFragment"
+        tools:layout="@layout/fragment_categories">
+        <action
+            android:id="@+id/action_categoriesFragment_to_productListFragment"
+            app:destination="@id/productListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.gios.freshngreen.fragments.home.CartFragment"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_orderAddressFragment"
+            app:destination="@id/orderAddressFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="com.gios.freshngreen.fragments.product.ProductListFragment"
+        tools:layout="@layout/fragment_product_list">
+
+        <action
+            android:id="@+id/action_productListFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+        <argument
+            android:name="subCategoryId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="categoryId"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.gios.freshngreen.fragments.product.ProductDetailsFragment"
+        tools:layout="@layout/fragment_product_details">
+
+        <argument
+            android:name="productModel"
+            app:argType="com.gios.freshngreen.responseModel.product.ProductList"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactUsFragment"
+        android:name="com.gios.freshngreen.fragments.contactus.ContactUsFragment"
+        tools:layout="@layout/fragment_contact_us">
+    </fragment>
+    <fragment
+        android:id="@+id/orderPaymentFragment"
+        android:name="com.gios.freshngreen.fragments.order.OrderPaymentFragment"
+        tools:layout="@layout/fragment_order_payment">
+    </fragment>
+    <fragment
+        android:id="@+id/orderHistoryFragment"
+        android:name="com.gios.freshngreen.fragments.order.OrderHistoryFragment"
+        tools:layout="@layout/fragment_order_history">
+    </fragment>
+    <fragment
+        android:id="@+id/orderAddressFragment"
+        android:name="com.gios.freshngreen.fragments.order.OrderAddressFragment"
+        tools:layout="@layout/fragment_order_address">
+        <argument
+            android:name="totalAmount"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_orderAddressFragment_to_orderPaymentFragment"
+            app:destination="@id/orderPaymentFragment" />
+    </fragment>
+
+</navigation>

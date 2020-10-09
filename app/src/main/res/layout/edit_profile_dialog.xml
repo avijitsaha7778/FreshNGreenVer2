@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/parent"
+    android:paddingBottom="@dimen/_16sdp"
+    android:background="@color/white">
+
+
+    <Button
+        android:id="@+id/editBtn"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:background="@drawable/button_background"
+        android:text="@string/Edit"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/headerLabel"
+        app:layout_constraintEnd_toEndOf="@id/headerLabel"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        app:layout_constraintTop_toBottomOf="@id/etEmail"/>
+
+    <TextView
+        android:id="@+id/headerLabel"
+        style="@style/NormalTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="EDIT YOUR PROFILE"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_14ssp"
+        android:layout_marginLeft="@dimen/_24sdp"
+        android:layout_marginRight="@dimen/_24sdp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etEmail"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/email"
+        android:importantForAutofill="no"
+        android:paddingLeft="@dimen/_10sdp"
+        android:maxLines="1"
+        android:background="@drawable/edittext_background"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etName"
+        app:layout_constraintStart_toStartOf="@id/headerLabel"
+        app:layout_constraintEnd_toEndOf="@id/headerLabel"/>
+
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etName"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/name"
+        android:importantForAutofill="no"
+        android:paddingLeft="@dimen/_10sdp"
+        android:maxLines="1"
+        android:background="@drawable/edittext_background"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLabel"
+        app:layout_constraintStart_toStartOf="@id/headerLabel"
+        app:layout_constraintEnd_toEndOf="@id/headerLabel"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

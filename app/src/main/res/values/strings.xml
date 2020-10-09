@@ -1,0 +1,288 @@
+<resources>
+    <string name="app_name">FreshNGreen</string>
+    <string name="image_desc">FreshNGreen</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="Edit">CONTINUE</string>
+    <string name="area">AREA<font fgcolor='#FF0000'>   *</font></string>
+    <string name="city">CITY<font fgcolor='#FF0000'>   *</font></string>
+    <string name="pincode">PIN CODE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="landmark">LANDMARK</string>
+    <string name="rs">\u20B9  </string>
+
+
+
+    <string name="categories_label">CATEGORIES</string>
+    <string name="home_label">HOME</string>
+    <string name="my_wishlist_label">MY WISHLIST</string>
+    <string name="my_cart_label">MY CART</string>
+    <string name="my_profile_label">MY PROFILE</string>
+    <string name="order_history_label">ORDER HISTORY</string>
+    <string name="add_cart">ADD</string>
+
+    <string name="check_connections">Please check your internet connections and try again</string>
+
+
+
+
+
+
+
+
+
+
+
+
+    <string name="sign_in">SIGN IN</string>
+    <string name="register_now">REGISTER NOW</string>
+    <string name="skip">SKIP</string>
+    <string name="register_account">REGISTER ACCOUNT</string>
+    <string name="mobile_number">MOBILE NUMBER<font fgcolor='#FF0000'>   *</font></string>
+    <string name="mobile_number_hint">MOBILE NUMBER</string>
+    <string name="email">EMAIL</string>
+    <string name="otp_hint">OTP</string>
+    <string name="name">NAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="set_4_digit_pin">SET 4 DIGIT PIN</string>
+    <string name="continue_">CONTINUE</string>
+    <string name="already_have_account">ALREADY HAVE ACCOUNT?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="verify_email">OTP HAS BEEN SENT TO YOUR MOBILE NUMBER</string>
+    <string name="verify_mobile">WE WILL SEND OTP TO YOUR MOBILE NUMBER</string>
+    <string name="new_password_label">PLEASE ENTER YOUR NEW PASSWORD HERE</string>
+    <string name="resend_otp">Resend</string>
+    <string name="verify_account">VERIFY ACCOUNT</string>
+    <string name="enter_otp_received_on_email">ENTER OTP RECEIVED ON EMAIL</string>
+    <string name="enter_otp_received_on_mobile">ENTER OTP RECEIVED ON MOBILE</string>
+    <string name="continue_activation">CONTINUE</string>
+    <string name="skip_and_take_me_to_home">SKIP AND TAKE ME TO HOME</string>
+    <string name="account_activation">ACCOUNT ACTIVATION</string>
+    <string name="submit_documents_to_activate_account">SUBMIT DOCUMENTS TO ACTIVATE \n ACCOUNT</string>
+    <string name="profile_details">PROFILE DETAILS</string>
+    <string name="docs_profile_msg">
+THIS HELPS US SERVE YOU BETTER. \nYOUR DATA IS ENCRYPTED AND \nCONFIDENTIAL WITH US.
+</string>
+    <string name="smile_and_let_s_give_a_nice_selfie">SMILE AND LET\'S GIVE A NICE \nSELFIE</string>
+    <string name="utility_bill">UTILITY BILL</string>
+    <string name="your_photo">YOUR PHOTO</string>
+    <string name="passport_or_any_government_approved_id">PASSPORT OR ANY GOVERNMENT \nAPPROVED ID</string>
+    <string name="any_government_utility_bill_such_as_tax_receipt">ANY GOVERNMENT UTILITY BILL \nSUCH AS TAX RECEIPT</string>
+    <string name="enable_finger_print_authentication">ENABLE FINGER PRINT \nAUTHENTICATION</string>
+    <string name="fingerprint_auth_msg">
+THIS HELPS US SERVE YOU BETTER.\nYOUR DATA IS ENCRYPTED AND \nCONFIDENTIAL WITH US.
+</string>
+    <string name="id_proof">ID PROOF</string>
+    <string name="terms_conditions">TERMS &amp; CONDITIONS</string>
+    <string name="by_activating_your_profile_you_are_approving_all_our">
+BY ACTIVATING YOUR PROFILE. YOU ARE APPROVING ALL OUR
+</string>
+    <string name="i_am_done_updating_details">I AM DONE UPDATING DETAILS</string>
+    <string name="not_in_mood_to_activate">NOT IN MOOD TO ACTIVATE</string>
+    <string name="personal_info">PERSONAL INFO</string>
+    <string name="first_name">FIRST NAME<font fgcolor='#FF0000'>   *</font></string>
+    <string name="middle_name">MIDDLE NAME (Optional)</string>
+    <string name="last_name">LAST NAME<font fgcolor='#FF0000'>   *</font></string>
+    <string name="gender">GENDER</string>
+    <string name="birth_date">BIRTH DATE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="country_hint">COUNTRY<font fgcolor='#FF0000'>   *</font></string>
+    <string name="address">ADDRESS</string>
+    <string name="country">COUNTRY</string>
+    <string name="address_line_1">ADDRESS LINE 1<font fgcolor='#FF0000'>   *</font></string>
+    <string name="address_line_2">ADDRESS LINE 2</string>
+    <string name="address_line_2_hint">ADDRESS LINE 2 (optional)</string>
+    <string name="state">STATE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="account_number">ACCOUNT NUMBER<font fgcolor='#FF0000'>   *</font></string>
+    <string name="card_last_digit">CARD LAST 4 DIGIT<font fgcolor='#FF0000'>   *</font></string>
+    <string name="zip_code">ZIP CODE/POST CODE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="accept_all">I ACCEPT ALL<font fgcolor='#FF0000'>   *</font></string>
+    <string name="security_code">ENTER 6 DIGIT CODE <font fgcolor='#FF0000'>   *</font></string>
+    <string name="set_preferences">SET PREFERENCES</string>
+    <string name="dollar_sign">$</string>
+    <string name="primary_currency">PRIMARY CURRENCY</string>
+    <string name="primary_language">PRIMARY LANGUAGE</string>
+    <string name="en">EN</string>
+    <string name="please_select_gender">Please select Gender</string>
+    <string name="please_select_country">Please select Country</string>
+    <string name="please_select_currency">Please select Currency</string>
+    <string name="please_accept_terms">Please accept Terms &amp; Conditions</string>
+    <string name="please_select_dialcode">Please select Dial Code</string>
+    <string name="please_select_birth_date">Please select Birth Date</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="log_out">LOG OUT</string>
+    <string name="app_version">Version :</string>
+    <string name="innovative_payment_solutions">Innovative Payment Solutions</string>
+    <string name="business">(REMITTANCE) Business</string>
+    <string name="individual">(REMITTANCE) Individual</string>
+    <string name="co_brander_wallet">Co Brander Wallet</string>
+    <string name="email_user_id">EMAIL / USER ID</string>
+    <string name="please_enter_user_id_email">Please enter User Id / Email</string>
+    <string name="amount">AMOUNT</string>
+    <string name="fee">Fee:</string>
+    <string name="exchange_rate">Exchange Rate: </string>
+    <string name="paying_with">PAYING WITH</string>
+    <string name="paying_to">PAYING TO</string>
+    <string name="proceed_to_pay">PROCEED TO PAY</string>
+    <string name="update">UPDATE</string>
+    <string name="beneficiary_a_c_info">
+<u>BENEFICIARY A/C INFO</u>
+</string>
+    <string name="beneficiary_s_full_name">Beneficiary`s Full Name</string>
+    <string name="iban_account_number">IBAN/Account Number</string>
+    <string name="swift_code_routing_number">SWIFT Code/Routing Number</string>
+    <string name="bank_address">Bank Address *</string>
+    <string name="bank_city">Bank City</string>
+    <string name="bank_state">Bank State</string>
+    <string name="bank_phone_number">Bank Phone Number *</string>
+    <string name="company_name">COMPANY NAME</string>
+    <string name="dashboard">DASHBOARD</string>
+
+    <string name="recent_transactions">RECENT TRANSACTIONS</string>
+    <string name="manage_my_card">MANAGE MY CARD</string>
+    <string name="notifications">NOTIFICATIONS</string>
+    <string name="add_iban">ADD IBAN</string>
+    <string name="more">MORE</string>
+    <string name="others">OTHERS</string>
+    <string name="contact_us">CONTACT US</string>
+    <string name="rate_us">RATE US</string>
+    <string name="share_earn">SHARE &amp; EARN</string>
+    <string name="about_us">ABOUT US</string>
+    <string name="faq">FAQ</string>
+    <string name="convert_from">CONVERT FROM</string>
+    <string name="convert_to">CONVERT TO</string>
+    <string name="select_a_contact_to_make_payment">SELECT A CONTACT TO MAKE PAYMENT</string>
+    <string name="corporate">CORPORATE</string>
+    <string name="add_nnew_contact">ADD\nNEW CONTACT</string>
+    <string name="send">SEND</string>
+    <string name="payment_confirmation">PAYMENT CONFIRMATION</string>
+    <string name="order_id">ORDER ID</string>
+    <string name="verification_pending_n_we_will_notify_you_once_this_account_is_verified">
+Verification Pending\n We will notify you once this account is verified.
+</string>
+    <string name="transaction_details">Transaction Details</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="mail_receipt">MAIL RECEIPT</string>
+    <string name="personal_details">PERSONAL DETAILS</string>
+    <string name="preferred_name">PREFERRED NAME<font fgcolor='#FF0000'>   *</font></string>
+    <string name="street_name">STREET NAME</string>
+    <string name="building_name">BUILDING NAME</string>
+    <string name="unit_number">UNIT_NUMBER</string>
+    <string name="block_number">BLOCK NUMBER</string>
+    <string name="is_your_permanent_sg_residence">Permanent Singapore Residence</string>
+    <string name="uk_address_proof">UK ADDRESS PROOF</string>
+    <string name="uk_address">UK ADDRESS</string>
+    <string name="delivery_address_1">DELIVERY ADDRESS 1</string>
+    <string name="delivery_address_2">DELIVERY ADDRESS 2</string>
+    <string name="billing_state">BILLING STATE</string>
+    <string name="billing_zip_code">BILLING ZIP CODE</string>
+    <string name="billing_address_1">BILLING ADDRESS 1</string>
+    <string name="billing_address_2">BILLING ADDRESS 2</string>
+    <string name="billing_city">BILLING CITY</string>
+    <string name="billing_landmark">BILLING LANDMARK</string>
+    <string name="mailing_address">MAILING ADDRESS</string>
+    <string name="same_mailing_address">SAME MAILING ADDRESS</string>
+    <string name="uk_address_details">UK ADDRESS DETAILS</string>
+    <string name="delivery_city">DELIVERY CITY</string>
+    <string name="delivery_landmark">DELIVERY LANDMARK</string>
+    <string name="delivery_state">DELIVERY STATE</string>
+    <string name="delivery_zip_code">DELIVERY ZIP CODE</string>
+    <string name="floor_number">FLOOR NUMBER</string>
+    <string name="something_went_wrong">
+Something went wrong. Please try again after sometime
+</string>
+    <string name="select">Select</string>
+    <string name="enter_document_number">ENTER DOCUMENT NUMBER</string>
+    <string name="select_date">SELECT DATE</string>
+    <string name="please_upload_a_clear_image_n_in_order_to_avoid_rejection">
+PLEASE UPLOAD A CLEAR IMAGE \n IN ORDER TO AVOID REJECTION
+</string>
+    <string name="upload_file">UPLOAD FILE</string>
+    <string name="document_number">DOCUMENT NUMBER<font fgcolor='#FF0000'>   *</font></string>
+    <string name="document_type">DOCUMENT TYPE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="issuing_authority">ISSUING AUTHORITY<font fgcolor='#FF0000'>   *</font></string>
+    <string name="issuance_date">ISSUANCE DATE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="upload_document">UPLOAD DOCUMENT<font fgcolor='#FF0000'>   *</font></string>
+    <string name="upload_document_btn">UPLOAD DOCUMENT</string>
+    <string name="selfie_with_id">SELFIE WITH ID</string>
+    <string name="submit">SUBMIT</string>
+    <string name="expiry_date">EXPIRY DATE<font fgcolor='#FF0000'>   *</font></string>
+    <string name="expiry_date_dialog">EXPIRY DATE</string>
+    <string name="enter_issuing_authority">ENTER ISSUING AUTHORITY</string>
+    <string name="address_proof">ADDRESS PROOF</string>
+    <string name="upload_back_side_of_document">UPLOAD BACK SIDE OF DOCUMENT<font fgcolor='#FF0000'>   *</font></string>
+    <string name="document_holder_name">DOCUMENT HOLDER NAME<font fgcolor='#FF0000'>   *</font></string>
+    <string name="enter_document_holder_name">ENTER DOCUMENT HOLDER NAME</string>
+    <string name="upload_front_side_of_document">UPLOAD FRONT SIDE OF DOCUMENT<font fgcolor='#FF0000'>   *</font></string>
+    <string name="republic_of_sg">Republic of Singapore</string>
+    <string name="_1234">1234</string>
+    <string name="expiry">EXPIRY</string>
+    <string name="disable_card">DISABLE CARD</string>
+    <string name="replace_card">REPLACE CARD</string>
+    <string name="update_pin">UPDATE PIN</string>
+    <string name="card_details">CARD DETAILS</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="my_wallets">MY WALLETS</string>
+    <string name="wallet_balance">WALLET BALANCE</string>
+    <string name="cvv">CVV</string>
+    <string name="xx_xx">XX/XX</string>
+    <string name="_123">123</string>
+    <string name="card_number">CARD NUMBER</string>
+    <string name="okay">OKAY</string>
+    <string name="_0_0">$$ 0.0</string>
+    <string name="your_kyc_is_not_completed_n_please_fill_the_kyc_details_first">
+Your KYC is not complete\nplease fill the KYC details first
+</string>
+    <string name="exchange_currency">EXCHANGE CURRENCY</string>
+    <string name="successful">SUCCESSFUL</string>
+    <string name="please_select_the_reason_to_block">
+Please select the reason for permanently block your previous card
+</string>
+    <string name="mm_yy">MM/YY</string>
+    <string name="enter_expiry_date">Enter Expiry Date</string>
+    <string name="mm">MM</string>
+    <string name="yy">YY</string>
+    <string name="enter_4_digit_pin">ENTER 4 DIGIT PIN</string>
+    <string name="valid_pin">Please enter a valid pin</string>
+    <string name="pin_update">Pin updated successfully</string>
+    <string name="logout_message">Do you want to logout?</string>
+    <string name="please_complete_your_profile_ndetails_first">Please complete your Profile</string>
+    <string name="forgot_password">FORGOT PASSWORD?</string>
+    <string name="confirm_password">CONFIRM PASSWORD</string>
+    <string name="new_password">NEW PASSWORD</string>
+    <string name="confirm_new_password">CONFIRM NEW PASSWORD</string>
+    <string name="invalid_credentials">Invalid username and password</string>
+    <string name="s_50">+S$50</string>
+    <string name="quick_select">QUICK SELECT</string>
+    <string name="s_50_00">50</string>
+    <string name="s_100">+S$100</string>
+    <string name="s_500">+S$500</string>
+    <string name="s_1000">+S$1000</string>
+    <string name="s_999">+S$999</string>
+    <string name="pay_now_iban">PAY NOW / IBAN</string>
+    <string name="bank_transfer">BANK TRANSFER</string>
+    <string name="username_exist">Username Already exists</string>
+    <string name="enter_valid_otp">Please enter a valid OTP</string>
+    <string name="otp_sent_success">OTP sent successfully</string>
+    <string name="upload_id_validation">Please complete ID PROOF first.</string>
+    <string name="enter_amount">Please enter Amount</string>
+    <string name="fill_required_detail">Please filled the required details</string>
+    <string name="successfully_exchanged">Successfully Exchanged</string>
+    <string name="currency_mismatch_msg">Source &amp; Destination currency could not be same.</string>
+    <string name="txt_update_new_version">New version available !</string>
+    <string name="txt_update_desc">Please update to get latest features and best experience</string>
+    <string name="txt_update_button_now">update now</string>
+    <string name="add_card_btn">Add card</string>
+    <string name="required_asterisk"><![CDATA[<font color=\'#cc0029\'>&nbsp*</font>]]></string>
+    <string name="no_transactio_found">No Transaction Found!</string>
+    <string name="activate_primary_first">Please activate primary card first</string>
+    <string name="first_name_addon">FIRST NAME<font fgcolor='#FF0000'>   *</font></string>
+    <string name="mid_name_addon">MIDDLE NAME</string>
+    <string name="last_name_addon">LAST NAME<font fgcolor='#FF0000'>   *</font></string>
+    <string name="email_addon">EMAIL<font fgcolor='#FF0000'>   *</font></string>
+    <string name="country_code_addon">COUNTRY CODE</string>
+    <string name="mobile_addon">MOBILE NUMBER<font fgcolor='#FF0000'>   *</font></string>
+</resources>
