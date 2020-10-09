@@ -163,12 +163,10 @@ public interface ApiInterface {
     @Multipart
     @POST(URL_REMOVE_CART)
     Call<RemoveCartModel> removeCart(@PartMap Map<String, RequestBody> partMap);
+
     @Multipart
     @POST(URL_ORDER_HISTORY)
     Call<OrderHistoryModel> orderHistory(@PartMap Map<String, RequestBody> partMap);
-
-
-
 
     @Multipart
     @POST(URL_CONTACT_US)

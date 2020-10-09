@@ -33,6 +33,6 @@ public class Urls {
     public static final String URL_CONTACT_US = BASE_URL + ROOT_URL + "getContactInfo";
     public static final String URL_AREA_LIST = BASE_URL + ROOT_URL + "getArea";
     public static final String URL_UPDATE_ADDRESS = BASE_URL + ROOT_URL + "updateUserAddress";
-    public static final String URL_ORDER_HISTORY = BASE_URL + ROOT_URL + "orderHistory";
+    public static final String URL_ORDER_HISTORY = BASE_URL + ROOT_URL + "getOrderHistory";
     public static final String URL_PLACE_ORDER = BASE_URL + ROOT_URL + "placeOrder";
 }

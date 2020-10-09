@@ -209,16 +209,22 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     private int calculateDiscount(float retailPrice, float actualPrice){
         int discount = 0;
-        try{
+        if(retailPrice > 0) {
+            try {
 
-            float  res1 = retailPrice / actualPrice;
-            float  res2 = 100/res1;
-            discount = (int) ((Integer)100-res2);
+                float res1 = retailPrice / actualPrice;
+                float res2 = 100 / res1;
+                discount = (int) ((Integer) 100 - res2);
+                if(discount <1){
+                    discount = 0;
+                }
 
-        }catch(Exception ex){
-            ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         return discount;
     }
+
 
 }

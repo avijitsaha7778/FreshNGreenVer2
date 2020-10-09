@@ -467,6 +467,9 @@ public class CartFragment extends Fragment implements CartAdapter.Interface {
                         Float.parseFloat(cartDetails.get(i).getActualPrice())) *
                         Integer.parseInt(cartDetails.get(i).getCartQuantity()));
                 savedValue = savedValue + itemVal;
+                if(savedValue <0){
+                    savedValue = 0;
+                }
             }
             return savedValue;
         }

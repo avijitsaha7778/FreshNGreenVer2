@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.gios.freshngreen.R;
 import com.gios.freshngreen.activities.HomeActivity;
+import com.gios.freshngreen.adapter.OrderHistoryAdapter;
 import com.gios.freshngreen.adapter.ProductListAdapter;
 import com.gios.freshngreen.databinding.FragmentOrderHistoryBinding;
 import com.gios.freshngreen.databinding.FragmentProductListBinding;
@@ -19,6 +20,7 @@ import com.gios.freshngreen.fragments.product.ProductListFragmentDirections;
 import com.gios.freshngreen.genericClasses.ApiObserver;
 import com.gios.freshngreen.responseModel.cart.AddCartModel;
 import com.gios.freshngreen.responseModel.order.OrderHistoryModel;
+import com.gios.freshngreen.responseModel.order.OrderList;
 import com.gios.freshngreen.responseModel.product.ProductList;
 import com.gios.freshngreen.responseModel.product.ProductModel;
 import com.gios.freshngreen.responseModel.wishlist.AddWishlistModel;
@@ -42,13 +44,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 import static com.gios.freshngreen.utils.Constants.USERID;
 import static com.gios.freshngreen.utils.MyUtilities.showMessage;
 
-public class OrderHistoryFragment extends Fragment {
+public class OrderHistoryFragment extends Fragment implements OrderHistoryAdapter.Interface {
     private FragmentOrderHistoryBinding binding;
     private SharedPref sharedPref;
     private OrderHistoryViewModel viewModel;
@@ -67,7 +70,7 @@ public class OrderHistoryFragment extends Fragment {
 
         initVar();
         setListeners();
-//        getorderHistory();
+        getorderHistory();
         return binding.getRoot();
     }
 
@@ -78,11 +81,9 @@ public class OrderHistoryFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(OrderHistoryViewModel.class);
         viewModel.init();
 
-        binding.productListRecyclerview.setHasFixedSize(true);
-        binding.productListRecyclerview.setNestedScrollingEnabled(false);
-        binding.productListRecyclerview.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.productlist_grid_spacing);
-        binding.productListRecyclerview.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        binding.orderListRecyclerview.setHasFixedSize(true);
+        binding.orderListRecyclerview.setNestedScrollingEnabled(false);
+        binding.orderListRecyclerview.setLayoutManager(new LinearLayoutManager(requireContext()));
 
     }
 
@@ -107,32 +108,29 @@ public class OrderHistoryFragment extends Fragment {
                         @Override
                         public void onSuccess(OrderHistoryModel response) {
                             try {
-                                /*if (response != null && response.getStatus()) {
-                                    if (response.getProductList().size() > 0) {
-                                        binding.productListRecyclerview.setVisibility(View.VISIBLE);
+                                if (response != null && response.getStatus()) {
+                                    if (response.getOrderList().size() > 0) {
+                                        binding.orderListRecyclerview.setVisibility(View.VISIBLE);
                                         binding.noProductLayout.setVisibility(View.GONE);
 
-                                        productList.clear();
-                                        productList.addAll(response.getProductList());
-
-                                        ProductListAdapter adapter
-                                                = new ProductListAdapter(requireContext(), productList, ProductListFragment.this);
-                                        binding.productListRecyclerview.setAdapter(adapter);
+                                        OrderHistoryAdapter adapter
+                                                = new OrderHistoryAdapter(requireContext(), response.getOrderList(), OrderHistoryFragment.this);
+                                        binding.orderListRecyclerview.setAdapter(adapter);
                                     } else {
-                                        binding.productListRecyclerview.setVisibility(View.GONE);
+                                        binding.orderListRecyclerview.setVisibility(View.GONE);
                                         binding.noProductLayout.setVisibility(View.VISIBLE);
                                         HomeActivity.setScreenName("Oops!");
                                     }
 
                                 } else {
                                     showMessage(requireContext(), binding.getRoot(), response.getError());
-                                    binding.productListRecyclerview.setVisibility(View.GONE);
+                                    binding.orderListRecyclerview.setVisibility(View.GONE);
                                     binding.noProductLayout.setVisibility(View.VISIBLE);
                                     HomeActivity.setScreenName("Oops!");
-                                }*/
+                                }
                             } catch (Exception ex) {
                                 ex.printStackTrace();
-                                binding.productListRecyclerview.setVisibility(View.GONE);
+                                binding.orderListRecyclerview.setVisibility(View.GONE);
                                 binding.noProductLayout.setVisibility(View.VISIBLE);
                             } finally {
                                 closeWaitDialog();
@@ -180,4 +178,8 @@ public class OrderHistoryFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onClickItem(OrderList mOrderList) {
+
+    }
 }
