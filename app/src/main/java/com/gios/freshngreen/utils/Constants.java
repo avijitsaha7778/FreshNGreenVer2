@@ -42,6 +42,7 @@ public class Constants {
     public static final String SUB_TOTAL = "subTotal";
     public static final String DELIVERY_CHARGE = "deliveryCharge";
     public static final String NET_TOTAL = "netTotal";
+    public static final String ORDERID = "orderId";
 
 
     public static final String INR_SYMBOL = "₹";

@@ -15,6 +15,7 @@ import com.gios.freshngreen.responseModel.login.SignupModel;
 import com.gios.freshngreen.responseModel.login.VerifyOtpForgotPasswordModel;
 import com.gios.freshngreen.responseModel.login.VerifyOtpModel;
 import com.gios.freshngreen.responseModel.login.VerifyPasswordModel;
+import com.gios.freshngreen.responseModel.order.OrderDetailsModel;
 import com.gios.freshngreen.responseModel.order.OrderHistoryModel;
 import com.gios.freshngreen.responseModel.order.PlaceOrderModel;
 import com.gios.freshngreen.responseModel.order.UpdateAddressModel;
@@ -52,6 +53,7 @@ import static com.gios.freshngreen.utils.Urls.URL_GET_PROFILE;
 import static com.gios.freshngreen.utils.Urls.URL_GET_WISHLIST;
 import static com.gios.freshngreen.utils.Urls.URL_HOME_PRODUCT_LIST;
 import static com.gios.freshngreen.utils.Urls.URL_LOGIN;
+import static com.gios.freshngreen.utils.Urls.URL_ORDER_DETAILS;
 import static com.gios.freshngreen.utils.Urls.URL_ORDER_HISTORY;
 import static com.gios.freshngreen.utils.Urls.URL_PLACE_ORDER;
 import static com.gios.freshngreen.utils.Urls.URL_PRODUCT_DETAILS;
@@ -167,6 +169,10 @@ public interface ApiInterface {
     @Multipart
     @POST(URL_ORDER_HISTORY)
     Call<OrderHistoryModel> orderHistory(@PartMap Map<String, RequestBody> partMap);
+
+    @Multipart
+    @POST(URL_ORDER_DETAILS)
+    Call<OrderDetailsModel> orderDetails(@PartMap Map<String, RequestBody> partMap);
 
     @Multipart
     @POST(URL_CONTACT_US)

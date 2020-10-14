@@ -91,6 +91,19 @@
         android:id="@+id/orderHistoryFragment"
         android:name="com.gios.freshngreen.fragments.order.OrderHistoryFragment"
         tools:layout="@layout/fragment_order_history">
+        <action
+            android:id="@+id/action_orderHistoryFragment_to_orderHistoryDetailsFragment"
+            app:destination="@id/orderHistoryDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderHistoryDetailsFragment"
+        android:name="com.gios.freshngreen.fragments.order.OrderHistoryDetailsFragment"
+        tools:layout="@layout/fragment_order_history_details">
+
+        <argument
+            android:name="orderItem"
+            app:argType="com.gios.freshngreen.responseModel.order.OrderList"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/orderAddressFragment"

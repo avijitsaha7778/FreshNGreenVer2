@@ -39,6 +39,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         private TextView date;
         private TextView time;
         private TextView amount;
+        private TextView paymentMode;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -47,6 +48,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             date = itemView.findViewById(R.id.date);
             time = itemView.findViewById(R.id.time);
             amount = itemView.findViewById(R.id.amount);
+            paymentMode = itemView.findViewById(R.id.paymentMode);
         }
     }
 
@@ -76,6 +78,10 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
             if (mOrderList != null && mOrderList.getOrderTime() != null) {
                 holder.amount.setText(String.format("%s %s", context.getResources().getString(R.string.rs), mOrderList.getNettotal()));
+            }
+
+            if (mOrderList != null && mOrderList.getPaymentMethod() != null) {
+                holder.paymentMode.setText(mOrderList.getPaymentMethod());
             }
 
             holder.item.setOnClickListener(v -> {

@@ -88,7 +88,8 @@ public class HomeActivity extends AppCompatActivity {
                     destination.getId() == R.id.contactUsFragment  ||
                     destination.getId() == R.id.orderAddressFragment  ||
                     destination.getId() == R.id.orderPaymentFragment  ||
-                    destination.getId() == R.id.orderHistoryFragment ) {
+                    destination.getId() == R.id.orderHistoryFragment  ||
+                    destination.getId() == R.id.orderHistoryDetailsFragment ) {
                 bottomNavigationView.setVisibility(View.GONE);
             } else {
                 bottomNavigationView.setVisibility(View.VISIBLE);
@@ -99,7 +100,8 @@ public class HomeActivity extends AppCompatActivity {
                     destination.getId() == R.id.contactUsFragment ||
                     destination.getId() == R.id.orderAddressFragment ||
                     destination.getId() == R.id.orderPaymentFragment  ||
-                    destination.getId() == R.id.orderHistoryFragment ) {
+                    destination.getId() == R.id.orderHistoryFragment  ||
+                    destination.getId() == R.id.orderHistoryDetailsFragment ) {
                 toolbarCart.setVisibility(View.INVISIBLE);
             } else {
                 toolbarCart.setVisibility(View.VISIBLE);
