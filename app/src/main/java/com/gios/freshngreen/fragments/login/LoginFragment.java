@@ -158,7 +158,6 @@ public class LoginFragment extends Fragment {
                                     if (response.getLoginUserDetails().getPhoneVerified().equalsIgnoreCase("INACTIVE")) {
                                         OtpFragment otpFragment = new OtpFragment();
                                         Bundle bundle = new Bundle();
-                                        bundle.putString("otp", "1111");
                                         bundle.putString("userId", response.getLoginUserDetails().getUserId());
                                         bundle.putString("mobile", response.getLoginUserDetails().getPhoneNo());
                                         otpFragment.setArguments(bundle);

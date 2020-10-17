@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,7 +47,7 @@ public class OtpFragment extends Fragment {
     private FragmentOtpBinding binding;
     private List<TextView> emailOtpTexts;
     private List<TextView> mobileOtpTexts;
-    private String otp;
+//    private String otp;
     private String userId;
     private String mobile;
     private SharedPref sharedPref;
@@ -68,7 +69,6 @@ public class OtpFragment extends Fragment {
 
         try {
             if (getArguments() != null) {
-                otp = getArguments().getString("otp");
                 userId = getArguments().getString("userId");
                 mobile = getArguments().getString("mobile");
                 fromForgotPasswordScreen = getArguments().getBoolean(STATUS);
@@ -85,7 +85,9 @@ public class OtpFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(VerifyOTPViewModel.class);
         viewModel.init();
         sharedPref = new SharedPref(requireContext());
-        binding.otp.setText(otp);
+        binding.resendOtp.setVisibility(View.INVISIBLE);
+        binding.timer.setVisibility(View.VISIBLE);
+        startTimer();
     }
 
 
@@ -271,7 +273,7 @@ public class OtpFragment extends Fragment {
             try {
                 showWaitDialog(requireContext(), "Sending OTP ...");
                 bodyMap = new HashMap<>();
-                getParamsResendOtp(bodyMap, sharedPref.getName(), sharedPref.getMobile(), sharedPref.getUserId());
+                getParamsResendOtp(bodyMap, sharedPref.getName(), mobile, userId);
 
                 viewModel.resendOtp(bodyMap, requireContext(), requireActivity()).observe(requireActivity(),
                         new ApiObserver<ResendOtpModel>(new ApiObserver.ChangeListener<ResendOtpModel>() {
@@ -279,6 +281,9 @@ public class OtpFragment extends Fragment {
                             public void onSuccess(ResendOtpModel response) {
                                 try {
                                     if (response != null && response.getStatus()) {
+                                        binding.resendOtp.setVisibility(View.INVISIBLE);
+                                        binding.timer.setVisibility(View.VISIBLE);
+                                        startTimer();
                                         showMessage(requireContext(), binding.getRoot(), getResources().getString(R.string.otp_sent_success));
                                     } else {
                                         showMessage(requireContext(), binding.getRoot(), getResources().getString(R.string.something_went_wrong));
@@ -336,6 +341,21 @@ public class OtpFragment extends Fragment {
         }
     }
 
+    private void startTimer(){
+        try{
+            new CountDownTimer(60000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    binding.timer.setText(String.format("Please wait for %d sec", millisUntilFinished / 1000));
+                }
+                public void onFinish() {
+                    binding.resendOtp.setVisibility(View.VISIBLE);
+                    binding.timer.setVisibility(View.INVISIBLE);
+                }
+            }.start();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
 
     private void showErrorMessage(String message) {
         showMessage(requireContext(), binding.getRoot(), message);

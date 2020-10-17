@@ -129,7 +129,6 @@ public class ForgotPasswordFragment extends Fragment {
                             {
                                 OtpFragment otpFragment = new OtpFragment();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("otp", response.getOtp());
                                 bundle.putString("userId", response.getUserId());
                                 bundle.putString("mobile", response.getPhoneNo());
                                 otpFragment.setArguments(bundle);
