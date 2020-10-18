@@ -14,14 +14,16 @@ import com.gios.freshngreen.activities.HomeActivity;
 import com.gios.freshngreen.adapter.RelatedProductListAdapter;
 import com.gios.freshngreen.adapter.WishlistAdapter;
 import com.gios.freshngreen.databinding.FragmentProductDetailsBinding;
+import com.gios.freshngreen.dialogs.PriceDialog;
+import com.gios.freshngreen.dialogs.PriceDialogForDetails;
 import com.gios.freshngreen.fragments.home.WishlistFragment;
 import com.gios.freshngreen.genericClasses.ApiObserver;
 import com.gios.freshngreen.responseModel.cart.AddCartModel;
+import com.gios.freshngreen.responseModel.product.PriceDetail;
 import com.gios.freshngreen.responseModel.wishlist.AddWishlistModel;
 import com.gios.freshngreen.responseModel.product.ProductDetail;
 import com.gios.freshngreen.responseModel.product.ProductDetailsModel;
 import com.gios.freshngreen.responseModel.product.ProductList;
-import com.gios.freshngreen.responseModel.product.RelatedProductList;
 import com.gios.freshngreen.responseModel.product.RelatedProductModel;
 import com.gios.freshngreen.responseModel.wishlist.RemoveWishlistModel;
 import com.gios.freshngreen.responseModel.wishlist.WishlistDetail;
@@ -37,21 +39,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
+import static androidx.constraintlayout.widget.Constraints.TAG;
 import static com.gios.freshngreen.utils.Constants.ACTION;
 import static com.gios.freshngreen.utils.Constants.CATEGORYID;
+import static com.gios.freshngreen.utils.Constants.PRICEID;
 import static com.gios.freshngreen.utils.Constants.PRODUCTID;
 import static com.gios.freshngreen.utils.Constants.QUANTITY;
 import static com.gios.freshngreen.utils.Constants.SUBCATEGORYID;
 import static com.gios.freshngreen.utils.Constants.USERID;
 import static com.gios.freshngreen.utils.MyUtilities.showMessage;
 
-public class ProductDetailsFragment extends Fragment implements RelatedProductListAdapter.Interface {
+public class ProductDetailsFragment extends Fragment implements RelatedProductListAdapter.Interface, PriceDialogForDetails.SelectPriceInterface {
     private FragmentProductDetailsBinding binding;
     private SharedPref sharedPref;
     private String productId = "";
@@ -62,6 +68,8 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     Map<String, RequestBody> bodyMap;
     private ProductList mProductList;
     private int cartQuantityValue = 0;
+    private int priceArrayItemPos = 0;
+    private ProductDetail mProductDetail;
 
 
     public ProductDetailsFragment() {
@@ -107,24 +115,7 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
     private void setListeners() {
-        binding.wishListIcon.setEventListener(new SparkEventListener(){
-            @Override
-            public void onEvent(ImageView button, boolean buttonState) {
-                if (buttonState) {
-                    // Button is active
-                    addWishlist(productId);
-                } else {
-                    // Button is inactive
-                    removeWishlist(productId);
-                }
-            }
-            @Override
-            public void onEventAnimationEnd(ImageView button, boolean buttonState) {
-            }
-            @Override
-            public void onEventAnimationStart(ImageView button, boolean buttonState) {
-            }
-        });
+
     }
 
     private void getParamsForDetails(Map<String, RequestBody> map, String productId, String userId) {
@@ -149,7 +140,8 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
                             try {
                                 if (response != null && response.getStatus()) {
                                     if (response.getProductDetails().size() > 0) {
-                                        setProductDescription(response.getProductDetails().get(0));
+                                        mProductDetail = response.getProductDetails().get(0);
+                                        setProductDescription(mProductDetail);
                                         categoryId = response.getProductDetails().get(0).getCategoryId();
                                         subCategoryId = response.getProductDetails().get(0).getSubcategoryId();
 
@@ -249,19 +241,21 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
 
-    private void getParamsAddWishlist(Map<String, RequestBody> map, String productId, String userId) {
+    private void getParamsAddWishlist(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId) {
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
 
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(USERID, userIdBody);
     }
 
-    private void addWishlist(String productId) {
+    private void addWishlist(String productIdWishlist, String defaultPriceId) {
         if(NetworkUtils.isNetworkAvailable(requireContext())) {
 
             bodyMap = new HashMap<>();
-        getParamsAddWishlist(bodyMap, productId, sharedPref.getUserId());
+        getParamsAddWishlist(bodyMap, productIdWishlist, defaultPriceId, sharedPref.getUserId());
 
         viewModel.addWishlist(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                 new ApiObserver<AddWishlistModel>(new ApiObserver.ChangeListener<AddWishlistModel>() {
@@ -270,6 +264,7 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
                         try {
                             if (response != null && response.getStatus()) {
                                 showMessage(requireContext(), binding.getRoot(), "Item added to your wishlist");
+                                getProductDetails(productId);
 
                             } else {
                                 showMessage(requireContext(), binding.getRoot(), response.getError());
@@ -307,11 +302,11 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
 
-    private void removeWishlist(String productId) {
+    private void removeWishlist(String productIdWishlist) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             showWaitDialog(requireContext(), "Loading...");
             bodyMap = new HashMap<>();
-            getParamsRemoveWishlist(bodyMap, productId, sharedPref.getUserId());
+            getParamsRemoveWishlist(bodyMap, productIdWishlist, sharedPref.getUserId());
 
             viewModel.removeWishlist(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<RemoveWishlistModel>(new ApiObserver.ChangeListener<RemoveWishlistModel>() {
@@ -360,22 +355,24 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
         }
     }
 
-    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void addToCart(String productId, String itemQuantity, String action) {
+    private void addToCart(String productIdCart, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsAddToCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsAddToCart(bodyMap, productIdCart, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -417,22 +414,24 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
 
-    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void updateCart(String productId, String itemQuantity, String action) {
+    private void updateCart(String productIdCart, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsUpdateCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsUpdateCart(bodyMap, productIdCart, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -477,34 +476,87 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     private void setProductDescription(ProductDetail mProductDetail) {
         try {
 //            cartQuantityValue = Integer.parseInt(mProductDetail.getItemAddToCart());
+
+            binding.wishListIcon.setEventListener(new SparkEventListener(){
+                @Override
+                public void onEvent(ImageView button, boolean buttonState) {
+                    if (buttonState) {
+                        // Button is active
+                        String defaultPriceId = "";
+                        for(int i=0; i< mProductDetail.getPriceDetails().size();i++){
+                            if(mProductDetail.getPriceDetails().get(i).isDefaultPrice()){
+                                defaultPriceId = mProductDetail.getPriceDetails().get(i).getId();
+                            }
+                        }
+                        addWishlist(mProductDetail.getId(),defaultPriceId);
+                    } else {
+                        // Button is inactive
+                        removeWishlist(mProductDetail.getId());
+                    }
+                }
+                @Override
+                public void onEventAnimationEnd(ImageView button, boolean buttonState) {
+                }
+                @Override
+                public void onEventAnimationStart(ImageView button, boolean buttonState) {
+                }
+            });
+
             binding.add.setOnClickListener(v -> {
+                String defaultPriceId = "";
                 if(cartQuantityValue < Integer.parseInt(mProductDetail.getQuantity())) {
                     cartQuantityValue++;
                     binding.cartQuantity.setText(String.valueOf(cartQuantityValue));
-                    updateCart(mProductList.getId(), String.valueOf(cartQuantityValue), "update");
+                    for(int i=0; i< mProductDetail.getPriceDetails().size();i++){
+                        if(mProductDetail.getPriceDetails().get(i).isDefaultPrice()){
+                            defaultPriceId = mProductDetail.getPriceDetails().get(i).getId();
+                        }
+                    }
+                    updateCart(mProductDetail.getId(), defaultPriceId, String.valueOf(cartQuantityValue), "update");
                 }
             });
 
 
             binding.addToCart.setOnClickListener(v -> {
+                String defaultPriceId = "";
+
                 binding.cartQuantityLayout.setVisibility(View.VISIBLE);
                 binding.addToCart.setVisibility(View.GONE);
                 cartQuantityValue++;
                 binding.cartQuantity.setText(String.valueOf(cartQuantityValue));
-                addToCart(mProductDetail.getId(),"1","insert");
+                for(int i=0; i< mProductDetail.getPriceDetails().size();i++){
+                    if(mProductDetail.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductDetail.getPriceDetails().get(i).getId();
+                    }
+                }
+                addToCart(mProductDetail.getId(),defaultPriceId, "1","insert");
 
             });
 
             binding.remove.setOnClickListener(v -> {
+                String defaultPriceId = "";
+
+                for(int i=0; i< mProductDetail.getPriceDetails().size();i++){
+                    if(mProductDetail.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductDetail.getPriceDetails().get(i).getId();
+                    }
+                }
                 if (cartQuantityValue <= 1) {
                     binding.cartQuantityLayout.setVisibility(View.GONE);
                     binding.addToCart.setVisibility(View.VISIBLE);
                     cartQuantityValue = 0;
-                    updateCart(mProductDetail.getId(), "0", "delete");
+                    updateCart(mProductDetail.getId(),defaultPriceId, "0", "delete");
                 } else {
                     cartQuantityValue--;
                     binding.cartQuantity.setText(String.valueOf(cartQuantityValue));
-                    updateCart(mProductDetail.getId(), String.valueOf(cartQuantityValue), "update");
+                    updateCart(mProductDetail.getId(),defaultPriceId, String.valueOf(cartQuantityValue), "update");
+                }
+            });
+
+            binding.unitLayout.setOnClickListener(v -> {
+                if(mProductDetail.getPriceDetails().size() > 1) {
+                    PriceDialogForDetails mPriceDialog = new PriceDialogForDetails(requireContext(), this, mProductDetail);
+                    mPriceDialog.show(getParentFragmentManager(), TAG);
                 }
             });
 
@@ -516,27 +568,80 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
                 binding.productName.setText(mProductDetail.getProductName());
             }
 
-            if (mProductDetail != null && mProductDetail.getActualPrice() != null) {
-                binding.sellingPrice.setText(String.format("%s%s", getResources().getString(R.string.rs), mProductDetail.getActualPrice()));
+            for(int i=0; i< mProductDetail.getPriceDetails().size();i++){
+                if(mProductDetail.getPriceDetails().get(i).isDefaultPrice()){
+                    priceArrayItemPos = i;
+                }
             }
 
-            if (mProductDetail != null && mProductDetail.getWeight() != null) {
-                binding.unit.setText(String.format("%s/ Unit", mProductDetail.getWeight()));
+            if(mProductDetail != null && mProductDetail.getPriceDetails().size() > 1) {
+                binding.dropdownArrow.setVisibility(View.VISIBLE);
+                binding.unitLayout.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.weight_background));
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice() != null) {
+                    binding.sellingPrice.setText(String.format("%s%s", getResources().getString(R.string.rs),
+                            mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice()));
+                }
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getWeight() != null) {
+//                    holder.unit.setText(String.format("%s/ Unit", mProductDetail.getPriceDetails().get(priceArrayItemPos).getWeight()));
+                    binding.unit.setText(String.format("%s / %s", getResources().getString(R.string.rs) +" "+ mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice(),
+                            mProductDetail.getPriceDetails().get(priceArrayItemPos).getWeight()));
+                }
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice() != null && !mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice().isEmpty()) {
+                    binding.productPrice.setText(String.format("%s%s", getResources().getString(R.string.rs),
+                            mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice()));
+                    binding.productPrice.setPaintFlags(binding.productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    binding.productPrice.setText("");
+                }
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice() != null &&
+                        mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice() != null
+                        && !mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice().isEmpty())
+                {
+                    binding.discount.setText(String.format("%s%% Off",
+                            String.valueOf(calculateDiscount((int) Double.parseDouble(mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice()),
+                                    (int) Double.parseDouble(mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice())))));
+                } else {
+                    binding.discount.setText("");
+                }
+
+            }
+            else{
+                binding.dropdownArrow.setVisibility(View.GONE);
+                binding.unitLayout.setBackground(null);
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice() != null) {
+                    binding.sellingPrice.setText(String.format("%s%s", getResources().getString(R.string.rs),
+                            mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice()));
+                }
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getWeight() != null) {
+                    binding.unit.setText(String.format("%s", mProductDetail.getPriceDetails().get(priceArrayItemPos).getWeight()));
+                }
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice() != null && !mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice().isEmpty()) {
+                    binding.productPrice.setText(String.format("%s%s", getResources().getString(R.string.rs),
+                            mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice()));
+                    binding.productPrice.setPaintFlags(binding.productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    binding.productPrice.setText("");
+                }
+
+                if (mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice() != null &&
+                        mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice() != null
+                        && !mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice().isEmpty())
+                {
+                    binding.discount.setText(String.format("%s%% Off",
+                            String.valueOf(calculateDiscount((int) Double.parseDouble(mProductDetail.getPriceDetails().get(priceArrayItemPos).getRetailPrice()),
+                                    (int) Double.parseDouble(mProductDetail.getPriceDetails().get(priceArrayItemPos).getActualPrice())))));
+                } else {
+                    binding.discount.setText("");
+                }
             }
 
-            if (mProductDetail != null && mProductDetail.getRetailPrice() != null && !mProductDetail.getRetailPrice().isEmpty()) {
-                binding.productPrice.setText(String.format("%s%s", getResources().getString(R.string.rs), mProductDetail.getRetailPrice()));
-                binding.productPrice.setPaintFlags(binding.productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                binding.productPrice.setText("");
-            }
-
-            if (mProductDetail != null && mProductDetail.getActualPrice() != null && mProductDetail.getRetailPrice() != null && !mProductDetail.getRetailPrice().isEmpty()) {
-                binding.discount.setText(String.format("%s%% Off", String.valueOf(calculateDiscount((int) Double.parseDouble(mProductDetail.getRetailPrice()),
-                        (int) Double.parseDouble(mProductDetail.getActualPrice())))));
-            } else {
-                binding.discount.setText("");
-            }
 
             if (mProductDetail != null && mProductDetail.getDescription() != null && !mProductDetail.getDescription().isEmpty()) {
                 binding.description.setText(mProductDetail.getDescription().toString().trim());
@@ -554,10 +659,12 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
             if(mProductDetail != null && mProductDetail.getQuantity() != null && Integer.parseInt(mProductDetail.getQuantity()) == 0) {
                 binding.outOfStock.setVisibility(View.VISIBLE);
                 binding.addToCart.setVisibility(View.GONE);
+                binding.cartQuantityLayout.setVisibility(View.GONE);
             }else {
                 if(mProductDetail != null && mProductDetail.getItemAddToCart() != null && Integer.parseInt(mProductDetail.getItemAddToCart()) >= 1) {
                     binding.cartQuantityLayout.setVisibility(View.VISIBLE);
                     binding.addToCart.setVisibility(View.GONE);
+                    binding.outOfStock.setVisibility(View.GONE);
                     cartQuantityValue = Integer.parseInt(mProductDetail.getItemAddToCart());
                     binding.cartQuantity.setText(String.valueOf(cartQuantityValue ));
                 }else {
@@ -571,7 +678,52 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
 
+    @Override
+    public void selectPriceCallback(PriceDetail mPriceDetail) {
+        if(mPriceDetail != null) {
+            for (int i = 0; i < mProductDetail.getPriceDetails().size(); i++) {
+                if (mProductDetail.getPriceDetails().get(i).getId().equalsIgnoreCase(mPriceDetail.getId())) {
+                    mProductDetail.getPriceDetails().get(i).setDefaultPrice(true);
+                }else{
+                    mProductDetail.getPriceDetails().get(i).setDefaultPrice(false);
+                }
+            }
+            setProductDescription(mProductDetail);
+
+
+           /* if (mPriceDetail.getActualPrice() != null) {
+                binding.sellingPrice.setText(String.format("%s%s", getResources().getString(R.string.rs),
+                        mPriceDetail.getActualPrice()));
+            }
+
+            if (mPriceDetail.getWeight() != null) {
+//                    holder.unit.setText(String.format("%s/ Unit", mPriceDetail.getWeight()));
+                binding.unit.setText(String.format("%s / %s", getResources().getString(R.string.rs) +" "+ mPriceDetail.getActualPrice(),
+                        mPriceDetail.getWeight()));
+            }
+
+            if (mPriceDetail.getRetailPrice() != null && !mPriceDetail.getRetailPrice().isEmpty()) {
+                binding.productPrice.setText(String.format("%s%s", getResources().getString(R.string.rs),
+                        mPriceDetail.getRetailPrice()));
+                binding.productPrice.setPaintFlags(binding.productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                binding.productPrice.setText("");
+            }
+
+            if (mPriceDetail.getActualPrice() != null &&
+                    mPriceDetail.getRetailPrice() != null
+                    && !mPriceDetail.getRetailPrice().isEmpty())
+            {
+                binding.discount.setText(String.format("%s%% Off",
+                        String.valueOf(calculateDiscount((int) Double.parseDouble(mPriceDetail.getRetailPrice()),
+                                (int) Double.parseDouble(mPriceDetail.getActualPrice())))));
+            } else {
+                binding.discount.setText("");
+            }*/
+
+        }
     }
 
     private void showWaitDialog(Context context, String message) {
@@ -617,7 +769,7 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
     @Override
-    public void onProductListClick(RelatedProductList mProductList) {
+    public void onProductListClick(ProductList mProductList) {
         binding.scrollView.smoothScrollTo(0, 0);
         getProductDetails(mProductList.getId());
         productId = mProductList.getId();
@@ -626,10 +778,16 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
     @Override
-    public void onAddWishlist(RelatedProductList mProductList) {
+    public void onAddWishlist(ProductList mProductList) {
         try{
+            String defaultPriceId = "";
             if(mProductList !=null && mProductList.getId() != null && !mProductList.getId().isEmpty()){
-                addWishlist(mProductList.getId());
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+                addWishlist(mProductList.getId(), defaultPriceId);
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -637,7 +795,7 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
     @Override
-    public void onRemoveWishlist(RelatedProductList mProductList) {
+    public void onRemoveWishlist(ProductList mProductList) {
         try {
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
                 removeWishlist(mProductList.getId());
@@ -648,10 +806,17 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
     @Override
-    public void onAddToCart(RelatedProductList mProductList) {
+    public void onAddToCart(ProductList mProductList) {
         try {
+            String defaultPriceId = "";
+
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
-                addToCart(mProductList.getId(),"1","insert");
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+                addToCart(mProductList.getId(), defaultPriceId,"1","insert");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -659,13 +824,20 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
     }
 
     @Override
-    public void onUpdateCart(RelatedProductList mProductList, String itemQuantity) {
+    public void onUpdateCart(ProductList mProductList, String itemQuantity) {
         try {
+            String defaultPriceId = "";
+
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
                 if(Integer.parseInt(itemQuantity) == 0){
-                    updateCart(mProductList.getId(), itemQuantity, "delete");
+                    updateCart(mProductList.getId(), defaultPriceId, itemQuantity, "delete");
                 }else {
-                    updateCart(mProductList.getId(), itemQuantity, "update");
+                    updateCart(mProductList.getId(), defaultPriceId, itemQuantity, "update");
                 }
             }
         } catch (Exception ex) {
@@ -673,4 +845,6 @@ public class ProductDetailsFragment extends Fragment implements RelatedProductLi
         }
 
     }
+
+
 }

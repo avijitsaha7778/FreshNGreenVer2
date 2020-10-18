@@ -13,6 +13,7 @@ import com.gios.freshngreen.adapter.WishlistAdapter;
 import com.gios.freshngreen.databinding.FragmentWishlistBinding;
 import com.gios.freshngreen.genericClasses.ApiObserver;
 import com.gios.freshngreen.responseModel.cart.AddCartModel;
+import com.gios.freshngreen.responseModel.product.PriceDetail;
 import com.gios.freshngreen.responseModel.product.ProductList;
 import com.gios.freshngreen.responseModel.wishlist.GetWishlistModel;
 import com.gios.freshngreen.responseModel.wishlist.RemoveWishlistModel;
@@ -36,6 +37,7 @@ import okhttp3.RequestBody;
 
 import static androidx.navigation.Navigation.findNavController;
 import static com.gios.freshngreen.utils.Constants.ACTION;
+import static com.gios.freshngreen.utils.Constants.PRICEID;
 import static com.gios.freshngreen.utils.Constants.PRODUCTID;
 import static com.gios.freshngreen.utils.Constants.QUANTITY;
 import static com.gios.freshngreen.utils.Constants.USERID;
@@ -157,7 +159,7 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
         map.put(PRODUCTID, productIdBody);
     }
 
-    private void removeWishlist(String productId,  boolean isMoveToCart) {
+    private void removeWishlist(String productId, String defaultPriceId, boolean isMoveToCart) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             showWaitDialog(requireContext(), "Loading...");
             bodyMap = new HashMap<>();
@@ -170,7 +172,7 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
                             try {
                                 if (response != null && response.getStatus()) {
                                     if (isMoveToCart) {
-                                        addToCart(productId,response.getWishlistDetails(),"1","insert");
+                                        addToCart(productId, defaultPriceId, response.getWishlistDetails(), "1", "insert");
                                     } else {
                                         closeWaitDialog();
                                         showMessage(requireContext(), binding.getRoot(), "Item removed from your wishlist");
@@ -214,22 +216,24 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
         }
     }
 
-    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void addToCart(String productId, List<WishlistDetail> wishlistDetails, String itemQuantity, String action) {
+    private void addToCart(String productId, String defaultPriceId, List<WishlistDetail> wishlistDetails, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsAddToCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsAddToCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(), itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -238,9 +242,9 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
                             try {
                                 if (response != null && response.getStatus()) {
                                     showMessage(requireContext(), binding.getRoot(), "Item moved to your cart");
-                                    if(response.getCartDetails().size()>0) {
+                                    if (response.getCartDetails().size() > 0) {
                                         HomeActivity.setCartValue(response.getCartDetails().size());
-                                    }else{
+                                    } else {
                                         HomeActivity.removeBadge();
                                     }
                                     if (wishlistDetails.size() > 0) {
@@ -283,22 +287,24 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
     }
 
 
-    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void updateCart(String productId, String itemQuantity, String action) {
+    private void updateCart(String productId, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsUpdateCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsUpdateCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(), itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -306,9 +312,9 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
                         public void onSuccess(AddCartModel response) {
                             try {
                                 if (response != null && response.getStatus()) {
-                                    if(response.getCartDetails().size()>0) {
+                                    if (response.getCartDetails().size() > 0) {
                                         HomeActivity.setCartValue(response.getCartDetails().size());
-                                    }else{
+                                    } else {
                                         HomeActivity.removeBadge();
                                     }
 //                                    showMessage(requireContext(), binding.getRoot(), "Item moved to your cart");
@@ -319,6 +325,68 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
                                 ex.printStackTrace();
                             } finally {
                                 closeWaitDialog();
+                            }
+                        }
+
+                        @Override
+                        public void onErrorMessage(String message) {
+                            closeWaitDialog();
+                            showMessage(requireContext(), binding.getRoot(), message);
+                        }
+
+                        @Override
+                        public void onFail(Exception exception) {
+                            closeWaitDialog();
+                            showMessage(requireContext(), binding.getRoot(), exception.getMessage());
+                        }
+                    }));
+        } else {
+            showMessage(requireContext(), binding.getRoot(), getString(R.string.check_connections));
+        }
+    }
+
+    private void getParamsUpdateWishlist(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId) {
+        RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
+        RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
+
+        map.put(USERID, userIdBody);
+        map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
+    }
+
+    private void updateWishlist(String productId, String defaultPriceId) {
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            showWaitDialog(requireContext(), "Loading...");
+            bodyMap = new HashMap<>();
+            getParamsUpdateWishlist(bodyMap, productId, defaultPriceId, sharedPref.getUserId());
+
+            viewModel.updateWishlist(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
+                    new ApiObserver<RemoveWishlistModel>(new ApiObserver.ChangeListener<RemoveWishlistModel>() {
+                        @Override
+                        public void onSuccess(RemoveWishlistModel response) {
+                            try {
+                                if (response != null && response.getStatus()) {
+                                    if (response.getWishlistDetails().size() > 0) {
+                                        binding.wishlistRecyclerview.setVisibility(View.VISIBLE);
+                                        binding.noProductLayout.setVisibility(View.GONE);
+
+                                        WishlistAdapter adapter
+                                                = new WishlistAdapter(requireContext(), response.getWishlistDetails(),
+                                                WishlistFragment.this);
+                                        binding.wishlistRecyclerview.setAdapter(adapter);
+                                    } else {
+                                        binding.wishlistRecyclerview.setVisibility(View.GONE);
+                                        binding.noProductLayout.setVisibility(View.VISIBLE);
+                                    }
+                                } else {
+                                    showMessage(requireContext(), binding.getRoot(), response.getError());
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }finally {
+                                closeWaitDialog();
+
                             }
                         }
 
@@ -385,8 +453,15 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
     @Override
     public void onRemoveWishlist(WishlistDetail mWishlistDetail) {
         try {
+            String defaultPriceId = "";
+
             if (mWishlistDetail != null && mWishlistDetail.getProductId() != null && !mWishlistDetail.getProductId().isEmpty()) {
-                removeWishlist(mWishlistDetail.getProductId(), false);
+                for (int i = 0; i < mWishlistDetail.getPriceDetails().size(); i++) {
+                    if (mWishlistDetail.getPriceDetails().get(i).isDefaultPrice()) {
+                        defaultPriceId = mWishlistDetail.getPriceDetails().get(i).getId();
+                    }
+                }
+                removeWishlist(mWishlistDetail.getProductId(), defaultPriceId, false);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -394,10 +469,25 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
     }
 
     @Override
+    public void onUpdateWishlist(PriceDetail mPriceDetail, String productId) {
+        if (productId != null && !productId.isEmpty() && mPriceDetail != null) {
+            updateWishlist(productId,mPriceDetail.getId());
+        }
+
+    }
+
+    @Override
     public void onMoveToCart(WishlistDetail mWishlistDetail) {
         try {
+            String defaultPriceId = "";
+
             if (mWishlistDetail != null && mWishlistDetail.getProductId() != null && !mWishlistDetail.getProductId().isEmpty()) {
-                removeWishlist(mWishlistDetail.getProductId(), true);
+                for (int i = 0; i < mWishlistDetail.getPriceDetails().size(); i++) {
+                    if (mWishlistDetail.getPriceDetails().get(i).isDefaultPrice()) {
+                        defaultPriceId = mWishlistDetail.getPriceDetails().get(i).getId();
+                    }
+                }
+                removeWishlist(mWishlistDetail.getProductId(), defaultPriceId, true);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -407,8 +497,15 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.Interf
     @Override
     public void onUpdateCart(WishlistDetail mWishlistDetail, String itemQuantity) {
         try {
+            String defaultPriceId = "";
+
             if (mWishlistDetail != null && mWishlistDetail.getProductId() != null && !mWishlistDetail.getProductId().isEmpty()) {
-                updateCart(mWishlistDetail.getProductId(), itemQuantity,"update");
+                for (int i = 0; i < mWishlistDetail.getPriceDetails().size(); i++) {
+                    if (mWishlistDetail.getPriceDetails().get(i).isDefaultPrice()) {
+                        defaultPriceId = mWishlistDetail.getPriceDetails().get(i).getId();
+                    }
+                }
+                updateCart(mWishlistDetail.getProductId(), defaultPriceId, itemQuantity, "update");
             }
         } catch (Exception ex) {
             ex.printStackTrace();

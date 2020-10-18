@@ -116,17 +116,45 @@
                         app:layout_constraintStart_toEndOf="@id/productPrice"
                         app:layout_constraintTop_toBottomOf="@+id/productName" />
 
-                    <TextView
-                        android:id="@+id/unit"
-                        style="@style/NormalTextView"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/unitLayout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:paddingLeft="@dimen/_2sdp"
-                        android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/sellingPrice" />
+                        app:layout_constraintWidth_default="percent"
+                        app:layout_constraintWidth_percent=".5"
+                        app:layout_constraintTop_toBottomOf="@+id/sellingPrice"
+                        android:background="@drawable/weight_background">
+
+                        <TextView
+                            android:id="@+id/unit"
+                            style="@style/NormalTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="3dp"
+                            android:paddingLeft="@dimen/_2sdp"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toStartOf="@id/dropdownArrow"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <ImageView
+                            android:id="@+id/dropdownArrow"
+                            style="@style/NormalTextView"
+                            android:layout_width="20dp"
+                            android:layout_height="0dp"
+                            android:src="@drawable/ic_arrow_down"
+                            android:padding="3dp"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/unit"
+                            app:layout_constraintTop_toTopOf="@id/unit"
+                            app:layout_constraintBottom_toBottomOf="@id/unit"
+                            app:tint="@color/black" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <Button
                         android:id="@+id/addToCart"
@@ -139,7 +167,7 @@
                         android:textSize="10sp"
                         android:visibility="gone"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/unit"
+                        app:layout_constraintTop_toBottomOf="@+id/unitLayout"
                         />
 
                     <TextView
@@ -157,7 +185,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/unit"
+                        app:layout_constraintTop_toBottomOf="@+id/unitLayout"
                         />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,10 +193,10 @@
                         android:layout_width="@dimen/_120sdp"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginBottom="@dimen/_5sdp"
-                        app:layout_constraintTop_toBottomOf="@+id/unit">
+                        app:layout_constraintTop_toBottomOf="@+id/unitLayout">
 
                         <ImageView
                             android:id="@+id/remove"
@@ -289,7 +317,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/relatedProductsLabel" />
+                    app:layout_constraintTop_toBottomOf="@id/relatedProductsLabel"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="10dp"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/noProductLayout"

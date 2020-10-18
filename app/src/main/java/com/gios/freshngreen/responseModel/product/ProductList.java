@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ProductList implements Serializable,Comparable<ProductList> {
     @SerializedName("id")
@@ -18,18 +19,12 @@ public class ProductList implements Serializable,Comparable<ProductList> {
     @SerializedName("image")
     @Expose
     private String image;
-    @SerializedName("actual_price")
+    @SerializedName("price_details")
     @Expose
-    private String actualPrice;
-    @SerializedName("retail_price")
-    @Expose
-    private String retailPrice;
+    private List<PriceDetail> priceDetails = null;
     @SerializedName("quantity")
     @Expose
     private String quantity;
-    @SerializedName("weight")
-    @Expose
-    private String weight;
     @SerializedName("description")
     @Expose
     private String description;
@@ -72,21 +67,14 @@ public class ProductList implements Serializable,Comparable<ProductList> {
         this.image = image;
     }
 
-    public String getActualPrice() {
-        return actualPrice;
+    public List<PriceDetail> getPriceDetails() {
+        return priceDetails;
     }
 
-    public void setActualPrice(String actualPrice) {
-        this.actualPrice = actualPrice;
+    public void setPriceDetails(List<PriceDetail> priceDetails) {
+        this.priceDetails = priceDetails;
     }
 
-    public String getRetailPrice() {
-        return retailPrice;
-    }
-
-    public void setRetailPrice(String retailPrice) {
-        this.retailPrice = retailPrice;
-    }
 
     public String getQuantity() {
         return quantity;
@@ -94,14 +82,6 @@ public class ProductList implements Serializable,Comparable<ProductList> {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
     }
 
     public String getDescription() {
@@ -130,6 +110,9 @@ public class ProductList implements Serializable,Comparable<ProductList> {
 
     @Override
     public int compareTo(ProductList productList) {
-        return this.getActualPrice().compareTo(productList.getActualPrice());
+        if(this.priceDetails!=null) {
+            return this.priceDetails.get(0).getActualPrice().compareTo(productList.getPriceDetails().get(0).getActualPrice());
+        }
+        return 0;
     }
 }

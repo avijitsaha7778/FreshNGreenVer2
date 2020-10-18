@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ProductDetail implements Serializable {
     @SerializedName("id")
@@ -24,6 +25,9 @@ public class ProductDetail implements Serializable {
     @SerializedName("image")
     @Expose
     private String image;
+    @SerializedName("price_details")
+    @Expose
+    private List<PriceDetail> priceDetails = null;
     @SerializedName("actual_price")
     @Expose
     private String actualPrice;
@@ -94,6 +98,14 @@ public class ProductDetail implements Serializable {
         this.image = image;
     }
 
+    public List<PriceDetail> getPriceDetails() {
+        return priceDetails;
+    }
+
+    public void setPriceDetails(List<PriceDetail> priceDetails) {
+        this.priceDetails = priceDetails;
+    }
+
     public String getActualPrice() {
         return actualPrice;
     }
@@ -149,5 +161,6 @@ public class ProductDetail implements Serializable {
     public void setWishlistFlag(Boolean wishlistFlag) {
         this.wishlistFlag = wishlistFlag;
     }
+
 
 }

@@ -95,19 +95,45 @@
                 app:layout_constraintStart_toEndOf="@id/productPrice"
                 app:layout_constraintTop_toBottomOf="@+id/productName" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/unitLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sellingPrice"
+            android:background="@drawable/weight_background">
+
             <TextView
                 android:id="@+id/unit"
                 style="@style/NormalTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
-                android:layout_marginTop="5dp"
+                android:layout_margin="3dp"
                 android:paddingLeft="@dimen/_2sdp"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dropdownArrow"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sellingPrice" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/dropdownArrow"
+                style="@style/NormalTextView"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_arrow_down"
+                android:padding="3dp"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/unit"
+                app:layout_constraintTop_toTopOf="@id/unit"
+                app:layout_constraintBottom_toBottomOf="@id/unit"
+                app:tint="@color/black" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addBtnLayout"
@@ -118,7 +144,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/unit">
+                app:layout_constraintTop_toBottomOf="@+id/unitLayout">
 
                 <Button
                     android:id="@+id/addToCart"

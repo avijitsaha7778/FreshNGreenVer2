@@ -87,7 +87,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             }
 
             if (mProductList != null && mProductList.getWeight() != null) {
-                holder.unit.setText(String.format("%s/ Unit", mProductList.getWeight()));
+                holder.unit.setText(String.format("%s", mProductList.getWeight()));
             }
 
             if (mProductList != null && mProductList.getRetailPrice() != null && !mProductList.getRetailPrice().isEmpty()) {

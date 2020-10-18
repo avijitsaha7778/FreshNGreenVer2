@@ -15,7 +15,7 @@ public class RelatedProductModel implements Serializable {
     private String error;
     @SerializedName("related_product_list")
     @Expose
-    private List<RelatedProductList> relatedProductList = null;
+    private List<ProductList> relatedProductList = null;
 
     public Boolean getStatus() {
         return status;
@@ -33,11 +33,11 @@ public class RelatedProductModel implements Serializable {
         this.error = error;
     }
 
-    public List<RelatedProductList> getRelatedProductList() {
+    public List<ProductList> getRelatedProductList() {
         return relatedProductList;
     }
 
-    public void setRelatedProductList(List<RelatedProductList> relatedProductList) {
+    public void setRelatedProductList(List<ProductList> relatedProductList) {
         this.relatedProductList = relatedProductList;
     }
 }

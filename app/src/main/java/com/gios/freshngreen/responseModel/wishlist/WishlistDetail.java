@@ -1,11 +1,16 @@
 package com.gios.freshngreen.responseModel.wishlist;
 
+import com.gios.freshngreen.responseModel.product.PriceDetail;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class WishlistDetail implements Serializable {
+    @SerializedName("wishlist_id")
+    @Expose
+    private String wishlistId;
     @SerializedName("product_id")
     @Expose
     private String productId;
@@ -18,6 +23,9 @@ public class WishlistDetail implements Serializable {
     @SerializedName("image")
     @Expose
     private String image;
+    @SerializedName("price_details")
+    @Expose
+    private List<PriceDetail> priceDetails = null;
     @SerializedName("actual_price")
     @Expose
     private String actualPrice;
@@ -40,6 +48,13 @@ public class WishlistDetail implements Serializable {
     @Expose
     private Boolean wishlistFlag;
 
+    public String getWishlistId() {
+        return wishlistId;
+    }
+
+    public void setWishlistId(String wishlistId) {
+        this.wishlistId = wishlistId;
+    }
 
     public String getProductId() {
         return productId;
@@ -71,6 +86,14 @@ public class WishlistDetail implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public List<PriceDetail> getPriceDetails() {
+        return priceDetails;
+    }
+
+    public void setPriceDetails(List<PriceDetail> priceDetails) {
+        this.priceDetails = priceDetails;
     }
 
     public String getActualPrice() {

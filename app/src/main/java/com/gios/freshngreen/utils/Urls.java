@@ -24,6 +24,7 @@ public class Urls {
     public static final String URL_GET_PROFILE = BASE_URL + ROOT_URL + "getProfileDetails";
     public static final String URL_UPDATE_PROFILE = BASE_URL + ROOT_URL + "updateProfileDetails";
     public static final String URL_ADD_WISHLIST = BASE_URL + ROOT_URL + "addToWishlist";
+    public static final String URL_UPDATE_WISHLIST = BASE_URL + ROOT_URL + "updateWishlist";
     public static final String URL_REMOVE_WISHLIST = BASE_URL + ROOT_URL + "removeWishlist";
     public static final String URL_GET_WISHLIST = BASE_URL + ROOT_URL + "getWishlist";
     public static final String URL_ADD_CART = BASE_URL + ROOT_URL + "addToCart";

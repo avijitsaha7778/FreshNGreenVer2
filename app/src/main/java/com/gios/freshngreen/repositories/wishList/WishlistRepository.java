@@ -5,6 +5,7 @@ import android.content.Context;
 import com.gios.freshngreen.apis.cartApis.AddToCartApi;
 import com.gios.freshngreen.apis.productApis.AddWishlistApi;
 import com.gios.freshngreen.apis.productApis.RemoveWishlistApi;
+import com.gios.freshngreen.apis.productApis.UpdateWishlistApi;
 import com.gios.freshngreen.apis.wishlistApis.GetWishlistApi;
 import com.gios.freshngreen.genericClasses.DataWrapper;
 import com.gios.freshngreen.responseModel.cart.AddCartModel;
@@ -24,6 +25,7 @@ public class WishlistRepository {
     private LiveData<DataWrapper<GetWishlistModel>> wishlistData;
     private LiveData<DataWrapper<AddWishlistModel>> addWishlistData;
     private LiveData<DataWrapper<RemoveWishlistModel>> removeWishlistData;
+    private LiveData<DataWrapper<RemoveWishlistModel>> updateWishlistData;
     private LiveData<DataWrapper<AddCartModel>> addToCartData;
 
 
@@ -50,6 +52,11 @@ public class WishlistRepository {
         removeWishlistData = new MutableLiveData<>();
         removeWishlistData = RemoveWishlistApi.createInstance(bodyMap, context, activity).onApiRequest();
         return removeWishlistData;
+    }
+    public LiveData<DataWrapper<RemoveWishlistModel>> updateWishlist(Map<String, RequestBody> bodyMap, FragmentActivity activity, Context context) {
+        updateWishlistData = new MutableLiveData<>();
+        updateWishlistData = UpdateWishlistApi.createInstance(bodyMap, context, activity).onApiRequest();
+        return updateWishlistData;
     }
 
     public LiveData<DataWrapper<AddCartModel>> addToCart(Map<String, RequestBody> bodyMap, FragmentActivity activity, Context context) {

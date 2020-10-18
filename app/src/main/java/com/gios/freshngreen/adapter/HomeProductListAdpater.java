@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gios.freshngreen.R;
+import com.gios.freshngreen.dialogs.PriceDialog;
 import com.gios.freshngreen.responseModel.product.ProductList;
 import com.squareup.picasso.Picasso;
 import com.varunest.sparkbutton.SparkButton;
@@ -18,10 +19,14 @@ import com.varunest.sparkbutton.SparkEventListener;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductListAdpater.ViewHolder>{
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
+public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductListAdpater.ViewHolder> implements PriceDialog.SelectPriceInterface{
     private List<ProductList> ProductListList;
     private HomeProductListAdpater.Interface mInterface;
     private Context context;
@@ -39,6 +44,14 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
         this.categoryId = categoryId;
     }
 
+
+    @Override
+    public void selectPriceCallback(List<ProductList> mProductListList) {
+        ProductListList = mProductListList;
+        notifyDataSetChanged();
+
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView productName;
         private TextView retailPrice;
@@ -49,11 +62,15 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
         private TextView cartQuantity;
         private Button addToCart;
         private ConstraintLayout cartQuantityLayout;
+        private ConstraintLayout unitLayout;
         private ImageView productImg;
         private ImageView add;
         private ImageView remove;
+        private ImageView dropdownArrow;
         private SparkButton wishListIcon;
         private int cartQuantityValue = 0;
+        private int priceArrayItemPos = 0;
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,7 +82,9 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
             outOfStock = itemView.findViewById(R.id.outOfStock);
             addToCart = itemView.findViewById(R.id.addToCart);
             cartQuantityLayout = itemView.findViewById(R.id.cartQuantityLayout);
+            unitLayout = itemView.findViewById(R.id.unitLayout);
             cartQuantity = itemView.findViewById(R.id.cartQuantity);
+            dropdownArrow = itemView.findViewById(R.id.dropdownArrow);
             productImg = itemView.findViewById(R.id.productImg);
             remove = itemView.findViewById(R.id.remove);
             add = itemView.findViewById(R.id.add);
@@ -90,34 +109,88 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
                 holder.productName.setText(mProductList.getProductName());
             }
 
-            if(mProductList != null && mProductList.getActualPrice() != null) {
-                holder.actualPrice.setText(String.format("%s%s", context.getResources().getString(R.string.rs), mProductList.getActualPrice()));
+            for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                    holder.priceArrayItemPos = i;
+                }
             }
 
-            if(mProductList != null && mProductList.getWeight() != null) {
-                holder.unit.setText(String.format("%s/ Unit", mProductList.getWeight()));
-            }
+            if(mProductList != null && mProductList.getPriceDetails().size() > 1) {
+                holder.dropdownArrow.setVisibility(View.VISIBLE);
+                holder.unitLayout.setBackground(ContextCompat.getDrawable(context, R.drawable.weight_background));
 
-            if(mProductList != null && mProductList.getRetailPrice() != null && !mProductList.getRetailPrice().isEmpty()) {
-                holder.retailPrice.setText(String.format("%s%s", context.getResources().getString(R.string.rs), mProductList.getRetailPrice()));
-                holder.retailPrice.setPaintFlags(holder.retailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }else{
-                holder.retailPrice.setText("");
-            }
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice() != null) {
+                    holder.actualPrice.setText(String.format("%s%s", context.getResources().getString(R.string.rs),
+                            mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice()));
+                }
 
-            if(mProductList != null && mProductList.getActualPrice() != null && mProductList.getRetailPrice() != null && !mProductList.getRetailPrice().isEmpty()) {
-                holder.discount.setText(String.format("%s%% Off", String.valueOf(calculateDiscount((int) Double.parseDouble(mProductList.getRetailPrice()),
-                        (int) Double.parseDouble(mProductList.getActualPrice())))));
-            }else {
-                holder.discount.setText("");
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getWeight() != null) {
+                    holder.unit.setText(String.format("%s / %s", context.getResources().getString(R.string.rs) + " " +
+                                    mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice(),
+                            mProductList.getPriceDetails().get(holder.priceArrayItemPos).getWeight()));
+                }
+
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice() != null && !mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice().isEmpty()) {
+                    holder.retailPrice.setText(String.format("%s%s", context.getResources().getString(R.string.rs),
+                            mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice()));
+                    holder.retailPrice.setPaintFlags(holder.retailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    holder.retailPrice.setText("");
+                }
+
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice() != null &&
+                        mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice() != null
+                        && !mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice().isEmpty())
+                {
+                    holder.discount.setText(String.format("%s%% Off",
+                            String.valueOf(calculateDiscount((int) Double.parseDouble(mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice()),
+                                    (int) Double.parseDouble(mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice())))));
+                } else {
+                    holder.discount.setText("");
+                }
+
+            }
+            else{
+                holder.dropdownArrow.setVisibility(View.GONE);
+                holder.unitLayout.setBackground(null);
+
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice() != null) {
+                    holder.actualPrice.setText(String.format("%s%s", context.getResources().getString(R.string.rs),
+                            mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice()));
+                }
+
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getWeight() != null) {
+                    holder.unit.setText(String.format("%s", mProductList.getPriceDetails().get(holder.priceArrayItemPos).getWeight()));
+                }
+
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice() != null && !mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice().isEmpty()) {
+                    holder.retailPrice.setText(String.format("%s%s", context.getResources().getString(R.string.rs),
+                            mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice()));
+                    holder.retailPrice.setPaintFlags(holder.retailPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    holder.retailPrice.setText("");
+                }
+
+                if (mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice() != null &&
+                        mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice() != null
+                        && !mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice().isEmpty())
+                {
+                    holder.discount.setText(String.format("%s%% Off",
+                            String.valueOf(calculateDiscount((int) Double.parseDouble(mProductList.getPriceDetails().get(holder.priceArrayItemPos).getRetailPrice()),
+                                    (int) Double.parseDouble(mProductList.getPriceDetails().get(holder.priceArrayItemPos).getActualPrice())))));
+                } else {
+                    holder.discount.setText("");
+                }
             }
 
             if(mProductList != null && mProductList.getQuantity() != null && Integer.parseInt(mProductList.getQuantity()) == 0) {
                 holder.outOfStock.setVisibility(View.VISIBLE);
                 holder.addToCart.setVisibility(View.GONE);
+                holder.cartQuantityLayout.setVisibility(View.GONE);
             }else {
                 if(mProductList != null && mProductList.getItemAddToCart() != null && Integer.parseInt(mProductList.getItemAddToCart()) >= 1) {
                     holder.cartQuantityLayout.setVisibility(View.VISIBLE);
+                    holder.outOfStock.setVisibility(View.GONE);
                     holder.addToCart.setVisibility(View.GONE);
                     holder.cartQuantityValue = Integer.parseInt(mProductList.getItemAddToCart());
                     holder.cartQuantity.setText(String.valueOf(holder.cartQuantityValue ));
@@ -140,12 +213,23 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
                 Picasso.get().load(mProductList.getImage()).into(holder.productImg);
             }
 
+
+
+            holder.unitLayout.setOnClickListener(v -> {
+                if(mProductList.getPriceDetails().size() > 1) {
+                    PriceDialog mPriceDialog = new PriceDialog(context, this, ProductListList, position);
+                    mPriceDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), TAG);
+                }
+            });
+
+
             holder.addToCart.setOnClickListener(v -> {
                 holder.cartQuantityLayout.setVisibility(View.VISIBLE);
                 holder.addToCart.setVisibility(View.GONE);
                 holder.cartQuantityValue ++;
                 holder.cartQuantity.setText(String.valueOf(holder.cartQuantityValue ));
                 mInterface.onAddToCart(mProductList);
+                mProductList.setItemAddToCart("1");
             });
 
             holder.add.setOnClickListener(v -> {
@@ -153,6 +237,7 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
                     holder.cartQuantityValue++;
                     holder.cartQuantity.setText(String.valueOf(holder.cartQuantityValue));
                     mInterface.onUpdateCart(mProductList,String.valueOf(holder.cartQuantityValue));
+                    mProductList.setItemAddToCart(String.valueOf(holder.cartQuantityValue));
                 }
             });
 
@@ -166,6 +251,7 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
                     holder.cartQuantity.setText(String.valueOf(holder.cartQuantityValue));
                 }
                 mInterface.onUpdateCart(mProductList,String.valueOf(holder.cartQuantityValue));
+                mProductList.setItemAddToCart(String.valueOf(holder.cartQuantityValue));
             });
 
             holder.wishListIcon.setEventListener(new SparkEventListener(){
@@ -174,9 +260,11 @@ public class HomeProductListAdpater extends RecyclerView.Adapter<HomeProductList
                     if (buttonState) {
                         // Button is active
                         mInterface.onAddWishlist(mProductList);
+                        mProductList.setWishlistFlag(true);
                     } else {
                         // Button is inactive
                         mInterface.onRemoveWishlist(mProductList);
+                        mProductList.setWishlistFlag(false);
                     }
                 }
                 @Override

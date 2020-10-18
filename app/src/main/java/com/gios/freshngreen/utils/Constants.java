@@ -24,6 +24,7 @@ public class Constants {
     public static final String CATEGORYID = "categoryId";
     public static final String SUBCATEGORYID = "subcategoryId";
     public static final String PRODUCTID = "productId";
+    public static final String PRICEID = "priceId";
     public static final String KEYWORD = "keyword";
     public static final String FULL_NAME = "userFullName";
     public static final String EMAIL = "userEmail";

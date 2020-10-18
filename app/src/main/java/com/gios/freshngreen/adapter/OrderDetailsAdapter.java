@@ -74,7 +74,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             }
 
             if (mOrderList != null && mOrderList.getProductWeight() != null) {
-                holder.unit.setText(String.format("%s/ Unit", mOrderList.getProductWeight()));
+                holder.unit.setText(String.format("%s", mOrderList.getProductWeight()));
             }
 
             if (mOrderList != null && mOrderList.getQuantity() != null) {

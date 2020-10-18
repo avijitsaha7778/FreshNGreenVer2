@@ -22,6 +22,7 @@ public class WishlistViewModel extends ViewModel {
     public LiveData<DataWrapper<GetWishlistModel>> LiveData_getWishList;
     public LiveData<DataWrapper<AddWishlistModel>> LiveData_addWishlist;
     public LiveData<DataWrapper<RemoveWishlistModel>> LiveData_removeWishlist;
+    public LiveData<DataWrapper<RemoveWishlistModel>> LiveData_updateWishlist;
     public LiveData<DataWrapper<AddCartModel>> LiveData_addToCart;
 
 
@@ -43,6 +44,11 @@ public class WishlistViewModel extends ViewModel {
     public LiveData<DataWrapper<RemoveWishlistModel>> removeWishlist(Map<String, RequestBody> bodyMap, FragmentActivity activity, Context context) {
         LiveData_removeWishlist = mRepo.removeWishlist(bodyMap, activity,context);
         return LiveData_removeWishlist;
+    }
+
+    public LiveData<DataWrapper<RemoveWishlistModel>> updateWishlist(Map<String, RequestBody> bodyMap, FragmentActivity activity, Context context) {
+        LiveData_updateWishlist = mRepo.updateWishlist(bodyMap, activity,context);
+        return LiveData_updateWishlist;
     }
 
     public LiveData<DataWrapper<AddCartModel>> addToCart(Map<String, RequestBody> bodyMap, FragmentActivity activity, Context context) {

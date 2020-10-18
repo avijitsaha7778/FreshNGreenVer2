@@ -65,6 +65,7 @@ import static com.gios.freshngreen.utils.Urls.URL_REMOVE_WISHLIST;
 import static com.gios.freshngreen.utils.Urls.URL_RESEND_OTP;
 import static com.gios.freshngreen.utils.Urls.URL_UPDATE_ADDRESS;
 import static com.gios.freshngreen.utils.Urls.URL_UPDATE_PROFILE;
+import static com.gios.freshngreen.utils.Urls.URL_UPDATE_WISHLIST;
 import static com.gios.freshngreen.utils.Urls.URL_VERIFY_OTP;
 import static com.gios.freshngreen.utils.Urls.URL_VERIFY_OTP_CHANGE_PASSWORD;
 
@@ -147,6 +148,10 @@ public interface ApiInterface {
     @Multipart
     @POST(URL_REMOVE_WISHLIST)
     Call<RemoveWishlistModel> removeWistlist(@PartMap Map<String, RequestBody> partMap);
+
+    @Multipart
+    @POST(URL_UPDATE_WISHLIST)
+    Call<RemoveWishlistModel> updateWistlist(@PartMap Map<String, RequestBody> partMap);
 
 
     @Multipart

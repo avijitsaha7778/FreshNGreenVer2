@@ -62,6 +62,7 @@ import static androidx.navigation.Navigation.findNavController;
 import static com.gios.freshngreen.utils.Constants.ACTION;
 import static com.gios.freshngreen.utils.Constants.CATEGORYID;
 import static com.gios.freshngreen.utils.Constants.KEYWORD;
+import static com.gios.freshngreen.utils.Constants.PRICEID;
 import static com.gios.freshngreen.utils.Constants.PRODUCTID;
 import static com.gios.freshngreen.utils.Constants.QUANTITY;
 import static com.gios.freshngreen.utils.Constants.USERID;
@@ -412,19 +413,21 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
                 }));
     }
 
-    private void getParamsAddWishlist(Map<String, RequestBody> map, String productId, String userId) {
+    private void getParamsAddWishlist(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId) {
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
 
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(USERID, userIdBody);
     }
 
-    private void addWishlist(String productId) {
+    private void addWishlist(String productId, String defaultPriceId) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
 
             bodyMap = new HashMap<>();
-            getParamsAddWishlist(bodyMap, productId, sharedPref.getUserId());
+            getParamsAddWishlist(bodyMap, productId, defaultPriceId,sharedPref.getUserId());
 
             viewModel.addWishlist(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddWishlistModel>(new ApiObserver.ChangeListener<AddWishlistModel>() {
@@ -524,22 +527,24 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
         }
     }
 
-    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void addToCart(String productId, String itemQuantity, String action) {
+    private void addToCart(String productId, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsAddToCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsAddToCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -581,22 +586,24 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
     }
 
 
-    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void updateCart(String productId, String itemQuantity, String action) {
+    private void updateCart(String productId, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsUpdateCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsUpdateCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -731,8 +738,14 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
     @Override
     public void onAddWishlist(ProductList mProductList) {
         try {
+            String defaultPriceId = "";
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
-                addWishlist(mProductList.getId());
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+                addWishlist(mProductList.getId(),defaultPriceId);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -753,8 +766,15 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
     @Override
     public void onAddToCart(ProductList mProductList) {
         try {
+            String defaultPriceId = "";
+
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
-                addToCart(mProductList.getId(),"1","insert");
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+                addToCart(mProductList.getId(), defaultPriceId,"1","insert");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -764,11 +784,18 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
     @Override
     public void onUpdateCart(ProductList mProductList, String itemQuantity) {
         try {
+            String defaultPriceId = "";
+
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
                 if(Integer.parseInt(itemQuantity) == 0){
-                    updateCart(mProductList.getId(), itemQuantity, "delete");
+                    updateCart(mProductList.getId(), defaultPriceId, itemQuantity, "delete");
                 }else {
-                    updateCart(mProductList.getId(), itemQuantity, "update");
+                    updateCart(mProductList.getId(), defaultPriceId, itemQuantity, "update");
                 }
             }
         } catch (Exception ex) {

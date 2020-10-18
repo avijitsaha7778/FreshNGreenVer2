@@ -12,9 +12,11 @@ import com.gios.freshngreen.R;
 import com.gios.freshngreen.activities.HomeActivity;
 import com.gios.freshngreen.adapter.ProductListAdapter;
 import com.gios.freshngreen.databinding.FragmentProductListBinding;
+import com.gios.freshngreen.dialogs.PriceDialog;
 import com.gios.freshngreen.dialogs.SortDialog;
 import com.gios.freshngreen.genericClasses.ApiObserver;
 import com.gios.freshngreen.responseModel.cart.AddCartModel;
+import com.gios.freshngreen.responseModel.product.PriceDetail;
 import com.gios.freshngreen.responseModel.wishlist.AddWishlistModel;
 import com.gios.freshngreen.responseModel.product.ProductList;
 import com.gios.freshngreen.responseModel.product.ProductModel;
@@ -44,13 +46,14 @@ import okhttp3.RequestBody;
 import static androidx.navigation.Navigation.findNavController;
 import static com.gios.freshngreen.utils.Constants.ACTION;
 import static com.gios.freshngreen.utils.Constants.CATEGORYID;
+import static com.gios.freshngreen.utils.Constants.PRICEID;
 import static com.gios.freshngreen.utils.Constants.PRODUCTID;
 import static com.gios.freshngreen.utils.Constants.QUANTITY;
 import static com.gios.freshngreen.utils.Constants.SUBCATEGORYID;
 import static com.gios.freshngreen.utils.Constants.USERID;
 import static com.gios.freshngreen.utils.MyUtilities.showMessage;
 
-public class ProductListFragment extends Fragment implements ProductListAdapter.Interface, SortDialog.Interface {
+public class ProductListFragment extends Fragment implements ProductListAdapter.Interface, SortDialog.Interface{
     private FragmentProductListBinding binding;
     private SharedPref sharedPref;
     private ProductListViewModel viewModel;
@@ -190,19 +193,21 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
         }
     }
 
-    private void getParamsAddWishlist(Map<String, RequestBody> map, String productId, String userId) {
+    private void getParamsAddWishlist(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId) {
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
 
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(USERID, userIdBody);
     }
 
-    private void addWishlist(String productId) {
+    private void addWishlist(String productId, String defaultPriceId) {
         if(NetworkUtils.isNetworkAvailable(requireContext())) {
 
             bodyMap = new HashMap<>();
-            getParamsAddWishlist(bodyMap, productId, sharedPref.getUserId());
+            getParamsAddWishlist(bodyMap, productId, defaultPriceId, sharedPref.getUserId());
 
             viewModel.addWishlist(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddWishlistModel>(new ApiObserver.ChangeListener<AddWishlistModel>() {
@@ -302,22 +307,24 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
         }
     }
 
-    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsAddToCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void addToCart(String productId, String itemQuantity, String action) {
+    private void addToCart(String productId, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsAddToCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsAddToCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -357,22 +364,24 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
     }
 
 
-    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(ACTION, actionBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void updateCart(String productId, String itemQuantity, String action) {
+    private void updateCart(String productId, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             bodyMap = new HashMap<>();
-            getParamsUpdateCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsUpdateCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -452,8 +461,14 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
     @Override
     public void onAddWishlist(ProductList mProductList) {
         try{
+            String defaultPriceId = "";
             if(mProductList !=null && mProductList.getId() != null && !mProductList.getId().isEmpty()){
-                addWishlist(mProductList.getId());
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+                addWishlist(mProductList.getId(), defaultPriceId);
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -475,8 +490,14 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
     @Override
     public void onAddToCart(ProductList mProductList) {
         try {
+            String defaultPriceId = "";
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
-                addToCart(mProductList.getId(),"1","insert");
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+                addToCart(mProductList.getId(),defaultPriceId,"1","insert");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -486,11 +507,18 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
     @Override
     public void onUpdateCart(ProductList mProductList, String itemQuantity) {
         try {
+            String defaultPriceId = "";
             if (mProductList != null && mProductList.getId() != null && !mProductList.getId().isEmpty()) {
+                for(int i=0; i< mProductList.getPriceDetails().size();i++){
+                    if(mProductList.getPriceDetails().get(i).isDefaultPrice()){
+                        defaultPriceId = mProductList.getPriceDetails().get(i).getId();
+                    }
+                }
+
                 if(Integer.parseInt(itemQuantity) == 0){
-                    updateCart(mProductList.getId(), itemQuantity, "delete");
+                    updateCart(mProductList.getId(),defaultPriceId, itemQuantity, "delete");
                 }else {
-                    updateCart(mProductList.getId(), itemQuantity, "update");
+                    updateCart(mProductList.getId(),defaultPriceId, itemQuantity, "update");
                 }
             }
         } catch (Exception ex) {
@@ -507,7 +535,7 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
 
                 Collections.sort(productList, new Comparator<ProductList>() {
                     public int compare(ProductList obj1, ProductList obj2) {
-                        return Integer.valueOf(obj1.getActualPrice()).compareTo(Integer.valueOf(obj2.getActualPrice()));
+                        return Integer.valueOf(obj1.getPriceDetails().get(0).getActualPrice()).compareTo(Integer.valueOf(obj2.getPriceDetails().get(0).getActualPrice()));
                     }
                 });
                 adapter = new ProductListAdapter(requireContext(), productList, ProductListFragment.this);
@@ -516,7 +544,7 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
             case "priceHighToLow":
                 Collections.sort(productList, new Comparator<ProductList>() {
                     public int compare(ProductList obj1, ProductList obj2) {
-                        return Integer.valueOf(obj2.getActualPrice()).compareTo(Integer.valueOf(obj1.getActualPrice()));
+                        return Integer.valueOf(obj2.getPriceDetails().get(0).getActualPrice()).compareTo(Integer.valueOf(obj1.getPriceDetails().get(0).getActualPrice()));
                     }
                 });
 
@@ -550,4 +578,5 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
     public void onSortCancelClick(FragmentProductListBinding binding) {
 
     }
+
 }
