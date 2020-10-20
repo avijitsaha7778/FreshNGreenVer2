@@ -43,6 +43,7 @@ import okhttp3.RequestBody;
 
 import static androidx.navigation.Navigation.findNavController;
 import static com.gios.freshngreen.utils.Constants.ACTION;
+import static com.gios.freshngreen.utils.Constants.PRICEID;
 import static com.gios.freshngreen.utils.Constants.PRODUCTID;
 import static com.gios.freshngreen.utils.Constants.QUANTITY;
 import static com.gios.freshngreen.utils.Constants.USERID;
@@ -228,26 +229,29 @@ public class CartFragment extends Fragment implements CartAdapter.Interface {
         }
     }
 
-    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String userId, String itemQuantity, String action) {
+    private void getParamsUpdateCart(Map<String, RequestBody> map, String productId, String defaultPriceId, String userId, String itemQuantity, String action) {
         RequestBody userIdBody = RequestBody.create(userId, MediaType.parse("text/plain"));
         RequestBody productIdBody = RequestBody.create(productId, MediaType.parse("text/plain"));
         RequestBody actionBody = RequestBody.create(action, MediaType.parse("text/plain"));
         RequestBody itemQuantityBody = RequestBody.create(itemQuantity, MediaType.parse("text/plain"));
+        RequestBody defaultPriceIdBody = RequestBody.create(defaultPriceId, MediaType.parse("text/plain"));
+
 
         map.put(USERID, userIdBody);
         map.put(PRODUCTID, productIdBody);
         map.put(ACTION, actionBody);
+        map.put(PRICEID, defaultPriceIdBody);
         map.put(QUANTITY, itemQuantityBody);
     }
 
-    private void updateCart(String productId, String itemQuantity, String action) {
+    private void updateCart(String productId, String defaultPriceId, String itemQuantity, String action) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             if (action.equals("delete")) {
                 showWaitDialog(requireContext(), "Refreshing...");
             }
 
             bodyMap = new HashMap<>();
-            getParamsUpdateCart(bodyMap, productId, sharedPref.getUserId(),itemQuantity, action);
+            getParamsUpdateCart(bodyMap, productId, defaultPriceId, sharedPref.getUserId(),itemQuantity, action);
 
             viewModel.addToCart(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                     new ApiObserver<AddCartModel>(new ApiObserver.ChangeListener<AddCartModel>() {
@@ -422,7 +426,7 @@ public class CartFragment extends Fragment implements CartAdapter.Interface {
     public void onRemoveFromCart(CartDetail mCartDetail) {
         try {
             if (mCartDetail != null && mCartDetail.getProductId() != null && !mCartDetail.getProductId().isEmpty()) {
-                updateCart(mCartDetail.getProductId(), "0", "delete");
+                updateCart(mCartDetail.getProductId(), mCartDetail.getPriceId(), "0", "delete");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -433,7 +437,7 @@ public class CartFragment extends Fragment implements CartAdapter.Interface {
     public void onUpdateCart(CartDetail mCartDetail, String itemQuantity) {
         try {
             if (mCartDetail != null && mCartDetail.getProductId() != null && !mCartDetail.getProductId().isEmpty()) {
-                    updateCart(mCartDetail.getProductId(), itemQuantity, "update");
+                    updateCart(mCartDetail.getProductId(), mCartDetail.getPriceId(), itemQuantity, "update");
             }
         } catch (Exception ex) {
             ex.printStackTrace();

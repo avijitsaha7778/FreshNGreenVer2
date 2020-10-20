@@ -107,6 +107,16 @@
                         app:layout_constraintTop_toBottomOf="@id/subTotalLabel" />
 
                     <TextView
+                        android:id="@+id/deliveryChargeCross"
+                        style="@style/TextViewPink"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginRight="@dimen/_6sdp"
+                        app:layout_constraintEnd_toStartOf="@id/deliveryCharge"
+                        app:layout_constraintTop_toBottomOf="@id/subTotal" />
+
+                    <TextView
                         android:id="@+id/deliveryCharge"
                         style="@style/NormalTextView"
                         android:layout_width="0dp"
@@ -222,6 +232,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:checked="false"
+                            android:visibility="invisible"
                             android:text="UPI / Cards"
                             android:textSize="16sp" />
                     </RadioGroup>

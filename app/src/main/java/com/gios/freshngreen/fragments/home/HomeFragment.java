@@ -266,13 +266,18 @@ public class HomeFragment extends Fragment implements HomeCategoriesHorizontalAd
 
     private void getBanner() {
         bodyMap = new HashMap<>();
-        getParams(bodyMap, "");
+        getParamsHomeProductList(bodyMap, sharedPref.getUserId());
         viewModel.banner(bodyMap, requireActivity(), requireContext()).observe(requireActivity(),
                 new ApiObserver<BannerModel>(new ApiObserver.ChangeListener<BannerModel>() {
                     @Override
                     public void onSuccess(BannerModel response) {
                         try {
                             if (response != null && response.getStatus()) {
+                                if(Integer.parseInt(response.getCartItemAdded()) > 0){
+                                    HomeActivity.setCartValue(Integer.parseInt(response.getCartItemAdded()));
+                                }else{
+                                    HomeActivity.removeBadge();
+                                }
                                 if (response.getBannerList().size() > 0) {
                                     Slider.init(new PicassoImageLoadingService(requireContext()));
                                     binding.bannerSlider.setAdapter(new BannerSliderAdapter(requireContext(), response.getBannerList()));

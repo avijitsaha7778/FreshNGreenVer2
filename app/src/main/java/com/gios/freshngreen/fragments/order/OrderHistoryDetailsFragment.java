@@ -91,6 +91,11 @@ public class OrderHistoryDetailsFragment extends Fragment {
         binding.time.setText(formatDate(mOrderList.getOrderTime(),"yyyy-MM-dd hh:mm:ss","hh:mm a"));
         binding.paymentMode.setText(mOrderList.getPaymentMethod());
 
+        if(Integer.parseInt(mOrderList.getDeliveryCharge()) == 0){
+            binding.deliveryCharge.setText("Free");
+        }else if(Integer.parseInt(mOrderList.getDeliveryCharge()) > 0){
+            binding.deliveryCharge.setText(String.format("%s %s", getResources().getString(R.string.rs), mOrderList.getDeliveryCharge()));
+        }
 
 
     }

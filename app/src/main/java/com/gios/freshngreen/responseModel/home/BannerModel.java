@@ -16,6 +16,9 @@ public class BannerModel implements Serializable {
     @SerializedName("banner_list")
     @Expose
     private List<BannerList> bannerList = null;
+    @SerializedName("cart_item_added")
+    @Expose
+    private String cartItemAdded;
 
     public Boolean getStatus() {
         return status;
@@ -39,5 +42,13 @@ public class BannerModel implements Serializable {
 
     public void setBannerList(List<BannerList> bannerList) {
         this.bannerList = bannerList;
+    }
+
+    public String getCartItemAdded() {
+        return cartItemAdded;
+    }
+
+    public void setCartItemAdded(String cartItemAdded) {
+        this.cartItemAdded = cartItemAdded;
     }
 }

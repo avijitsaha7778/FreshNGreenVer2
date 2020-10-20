@@ -12,6 +12,9 @@ public class CartDetail implements Serializable {
     @SerializedName("product_id")
     @Expose
     private String productId;
+    @SerializedName("price_id")
+    @Expose
+    private String priceId;
     @SerializedName("category_id")
     @Expose
     private String categoryId;
@@ -60,6 +63,14 @@ public class CartDetail implements Serializable {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public String getPriceId() {
+        return priceId;
+    }
+
+    public void setPriceId(String priceId) {
+        this.priceId = priceId;
     }
 
     public String getCategoryId() {

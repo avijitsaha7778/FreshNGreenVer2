@@ -3,6 +3,7 @@ package com.gios.freshngreen.fragments.order;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -333,6 +334,9 @@ public class OrderPaymentFragment extends Fragment{
                     subTotalAmt = String.valueOf(calculateTotalCartValue(cartDetail));
 
                     if(calculateTotalCartValue(cartDetail) > 499){
+                        binding.deliveryChargeCross.setText(String.format("%s  20", getResources().getString(R.string.rs)));
+                        binding.deliveryChargeCross.setPaintFlags(binding.deliveryChargeCross.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
                         binding.deliveryCharge.setText("Free");
                         totalAmt = (int) calculateTotalCartValue(cartDetail);
                         deliveryChangeAmt = "0";
